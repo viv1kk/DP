@@ -1,0 +1,149 @@
+Solution,Environment,SID,Instance Number,Location,Hostname,Application Category,Application stack,link to Fiori Launchpad,Central Web Dispatcher,DB Type,Cluster,OS  Type,OS version
+EWM,Sandbox,WAS,10,APAC,APRDCSPSL040,PAS,ABAP,https://ewm-sbx.apac.sap.nexperia.com/sap/bc/ui2/flp,aprdcspsl080.ap-rdc01.nexperia.com,NA,NA,Linux,RHEL 8
+EWM,Sandbox,H1S,10,APAC,APRDCSPSL041,DB ,NA,https://hanaewm-sbx.apac.sap.nexperia.com/sap/hana/xs/admin,aprdcspsl080.ap-rdc01.nexperia.com,HANA,NA,Linux,RHEL 8
+EWM,Development ,WAD,20,APAC,APRDCSPDL040,PAS,ABAP,https://ewm-dev.apac.sap.nexperia.com/sap/bc/ui2/flp ,aprdcspdl080.ap-rdc01.nexperia.com,NA,NA,Linux,RHEL 8
+EWM,Development ,H1D,20,APAC,APRDCSPDL041,DB ,NA,https://hanaewm-dev.apac.sap.nexperia.com/sap/hana/xs/admin,aprdcspdl080.ap-rdc01.nexperia.com,HANA,NA,Linux,RHEL 8
+EWM,Quality ,WAQ,50,APAC,APRDCSPQL040,PAS,ABAP,https://ewm-qas.apac.sap.nexperia.com/sap/bc/ui2/flp ,aprdcspql080.ap-rdc01.nexperia.com,NA,NA,Linux,RHEL 8
+EWM,Quality ,H1Q,50,APAC,APRDCSPQL041,DB ,NA,https://hanaewm-qas.apac.sap.nexperia.com/sap/hana/xs/admin,aprdcspql080.ap-rdc01.nexperia.com,HANA,NA,Linux,RHEL 8
+EWM,Validation ,WAV,70,APAC,APRDCSPVL043,PAS,ABAP,https://ewm-val.apac.sap.nexperia.com/sap/bc/ui2/flp,aprdcspvl080.nws.nexperia.com,NA,NA,Linux,RHEL 8
+EWM,Validation ,H1V,70,APAC,APRDCSPVL141,DB ,NA,https://hanaewm-val.apac.sap.nexperia.com/sap/hana/xs/admin,aprdcspvl080.nws.nexperia.com,HANA,NA,Linux,RHEL 8
+EWM,Production ,WAP,82,APAC,APRDCSPPL041,ASCS,ABAP,https://ewm-prd.apac.sap.nexperia.com/sap/bc/ui2/flp,aprdcsppl080.NWS.NEXPERIA.com,NA,HPE Service Guard,Linux,RHEL 8
+EWM,Production ,WAP,83,APAC,APRDCSPPL042,ERS,ABAP,https://ewm-prd.apac.sap.nexperia.com/sap/bc/ui2/flp,aprdcsppl080.NWS.NEXPERIA.com,NA,HPE Service Guard,Linux,RHEL 8
+EWM,Production ,WAP,80,APAC,APRDCSPPL043,PAS,ABAP,https://ewm-prd.apac.sap.nexperia.com/sap/bc/ui2/flp,aprdcsppl080.NWS.NEXPERIA.com,NA,NA,Linux,RHEL 8
+EWM,Production ,WAP,81,APAC,APRDCSPPL044,AAS,ABAP,https://ewm-prd.apac.sap.nexperia.com/sap/bc/ui2/flp,aprdcsppl080.NWS.NEXPERIA.com,NA,NA,Linux,RHEL 8
+EWM,Production ,H1P,70,APAC,APRDCSPPL141,DB ,NA,https://hanaewm-prd.apac.sap.nexperia.com:4380/,aprdcsppl080.NWS.NEXPERIA.com,HANA,NA,Linux,RHEL 8
+EWM,Production ,H1P,70,APAC,APRDCSPPL142,DB ,NA,https://hanaewm-prd.apac.sap.nexperia.com:4380/,aprdcsppl080.NWS.NEXPERIA.com,HANA,NA,Linux,RHEL 8
+ADS for EWM,Sandbox,AAS,10,APAC,APRDCSPSL040,PAS,Java,https://ewmjava-sbx.apac.sap.nexperia.com/startPage,aprdcspsl080.ap-rdc01.nexperia.com,NA,NA,Linux,RHEL 8
+ADS for EWM,Sandbox,H1S,10,APAC,APRDCSPSL041,DB ,NA,https://hanaewm-sbx.apac.sap.nexperia.com/sap/hana/xs/admin,aprdcspsl080.ap-rdc01.nexperia.com,HANA,NA,Linux,RHEL 8
+ADS for EWM,Development ,AAD,20,APAC,APRDCSPDL040,PAS,Java,https://ewmjava-dev.apac.sap.nexperia.com/startPage,aprdcspdl080.ap-rdc01.nexperia.com,NA,NA,Linux,RHEL 8
+ADS for EWM,Development ,H1D,20,APAC,APRDCSPDL041,DB ,NA,https://hanaewm-dev.apac.sap.nexperia.com/sap/hana/xs/admin,aprdcspdl080.ap-rdc01.nexperia.com,HANA,NA,Linux,RHEL 8
+ADS for EWM,Quality ,AAQ,50,APAC,APRDCSPQL040,PAS,Java,https://ewmjava-qas.apac.sap.nexperia.com/startPage,aprdcspql080.ap-rdc01.nexperia.com,NA,NA,Linux,RHEL 8
+ADS for EWM,Quality ,H1Q,50,APAC,APRDCSPQL041,DB ,NA,https://hanaewm-qas.apac.sap.nexperia.com/sap/hana/xs/admin,aprdcspql080.ap-rdc01.nexperia.com,HANA,NA,Linux,RHEL 8
+ADS for EWM,Validation ,AAV,70,APAC,APRDCSPVL048,PAS,Java,https://ewmjava-val.apac.sap.nexperia.com/startPage,aprdcspvl080.nws.nexperia.com,NA,NA,Linux,RHEL 8
+ADS for EWM,Production ,AAP,82,APAC,APRDCSPPL046,SCS,Java,https://ewmjava-prd.apac.sap.nexperia.com/startPage,aprdcsppl080.NWS.NEXPERIA.com,NA,HPE Service Guard,Linux,RHEL 8
+ADS for EWM,Production ,AAP,83,APAC,APRDCSPPL047,ERS,Java,https://ewmjava-prd.apac.sap.nexperia.com/startPage,aprdcsppl080.NWS.NEXPERIA.com,NA,HPE Service Guard,Linux,RHEL 8
+ADS for EWM,Production ,AAP,80,APAC,APRDCSPPL048,PAS,Java,https://ewmjava-prd.apac.sap.nexperia.com/startPage,aprdcsppl080.NWS.NEXPERIA.com,NA,NA,Linux,RHEL 8
+ADS for EWM,Production ,AAP,81,APAC,APRDCSPPL049,AAS,Java,https://ewmjava-prd.apac.sap.nexperia.com/startPage,aprdcsppl080.NWS.NEXPERIA.com,NA,NA,Linux,RHEL 8
+ADS for EWM,Production ,H1P,80,APAC,APRDCSPPL141,DB ,NA,https://hanaewm-prd.apac.sap.nexperia.com:4380/,aprdcsppl080.NWS.NEXPERIA.com,HANA,NA,Linux,RHEL 8
+ADS for EWM,Production ,H1P,80,APAC,APRDCSPPL142,DB ,NA,https://hanaewm-prd.apac.sap.nexperia.com:4380/,aprdcsppl080.NWS.NEXPERIA.com,HANA,NA,Linux,RHEL 8
+CFIN ,Sandbox,S4S,10,EMEA,EURDCSPSL001,PAS,ABAP,https://s4-sbx.emea.sap.nexperia.com/sap/bc/ui2/flp,eurdcspsl080.nws.nexperia.com,NA,NA,Linux,RHEL 8
+CFIN ,Sandbox,H2S,10,EMEA,EURDCSPSL002,DB ,NA,https://hanas4-sbx.emea.sap.nexperia.com/sap/hana/xs/admin,eurdcspsl080.nws.nexperia.com,HANA,NA,Linux,RHEL 8
+CFIN ,Development ,S4D,20,EMEA,EURDCSPDL001,PAS,ABAP,https://s4-dev.emea.sap.nexperia.com/sap/bc/ui2/flp,eurdcspdl080.nws.nexperia.com,NA,NA,Linux,RHEL 8
+CFIN ,Development ,H2D,20,EMEA,EURDCSPDL002,DB ,NA,https://hanas4-dev.emea.apac.sap.nexperia.com/sap/hana/xs/admin,eurdcspdl080.nws.nexperia.com,HANA,NA,Linux,RHEL 8
+CFIN ,Quality ,S4Q,50,EMEA,EURDCSPQL001,PAS,ABAP,https://s4-qas.emea.sap.nexperia.com/sap/bc/ui2/flp,eurdcspql080.nws.nexperia.com,NA,NA,Linux,RHEL 8
+CFIN ,Quality ,H2Q,50,EMEA,EURDCSPQL002,DB ,NA,https://hanas4-qas.emea.sap.nexperia.com/sap/hana/xs/admin,eurdcspql080.nws.nexperia.com,HANA,NA,Linux,RHEL 8
+CFIN ,Production ,S4P,82,EMEA,EURDCSPPL001,ASCS,ABAP,https://s4-prd.emea.sap.nexperia.com/sap/bc/ui2/flp,eurdcsppl080.nws.nexperia.com,NA,HPE Service Guard,Linux,RHEL 8
+CFIN ,Production ,S4P,83,EMEA,EURDCSPPL002,ERS,ABAP,https://s4-prd.emea.sap.nexperia.com/sap/bc/ui2/flp,eurdcsppl080.nws.nexperia.com,NA,HPE Service Guard,Linux,RHEL 8
+CFIN ,Production ,S4P,80,EMEA,EURDCSPPL003,PAS,ABAP,https://s4-prd.emea.sap.nexperia.com/sap/bc/ui2/flp,eurdcsppl080.nws.nexperia.com,NA,NA,Linux,RHEL 8
+CFIN ,Production ,S4P,81,EMEA,EURDCSPPL004,AAS,ABAP,https://s4-prd.emea.sap.nexperia.com/sap/bc/ui2/flp,eurdcsppl080.nws.nexperia.com,NA,NA,Linux,RHEL 8
+CFIN ,Production ,H2P,80,EMEA,EURDCSPPL011,DB ,NA,https://hanas4-prd.emea.sap.nexperia.com:4380/,eurdcsppl080.nws.nexperia.com,HANA,NA,Linux,RHEL 8
+CFIN ,Production ,H2P,80,EMEA,EURDCSPPL012,DB ,NA,https://hanas4-prd.emea.sap.nexperia.com:4380/,eurdcsppl080.nws.nexperia.com,HANA,NA,Linux,RHEL 8
+ADS for CFIN ,Sandbox,AES,10,EMEA,EURDCSPSL001,PAS,Java,https://s4java-sbx.emea.sap.nexperia.com/startPage,eurdcspsl080.nws.nexperia.com,NA,NA,Linux,RHEL 8
+ADS for CFIN ,Sandbox,H2S,10,EMEA,EURDCSPSL002,DB ,NA,https://hanas4-sbx.emea.sap.nexperia.com/sap/hana/xs/admin,eurdcspsl080.nws.nexperia.com,HANA,NA,Linux,RHEL 8
+ADS for CFIN ,Development ,AED,20,EMEA,EURDCSPDL001,PAS,Java,https://s4java-dev.emea.sap.nexperia.com/startPage,eurdcspdl080.nws.nexperia.com,NA,NA,Linux,RHEL 8
+ADS for CFIN ,Development ,H2D,20,EMEA,EURDCSPDL002,DB ,NA,https://hanas4-dev.emea.apac.sap.nexperia.com/sap/hana/xs/admin,eurdcspdl080.nws.nexperia.com,HANA,NA,Linux,RHEL 8
+ADS for CFIN ,Quality ,AEQ,50,EMEA,EURDCSPQL001,PAS,Java,https://s4java-qas.emea.sap.nexperia.com/startPage,eurdcspql080.nws.nexperia.com,NA,NA,Linux,RHEL 8
+ADS for CFIN ,Quality ,H2Q,50,EMEA,EURDCSPQL002,DB ,NA,https://hanas4-qas.emea.sap.nexperia.com/sap/hana/xs/admin,eurdcspql080.nws.nexperia.com,HANA,NA,Linux,RHEL 8
+ADS for CFIN ,Production ,AEP,82,EMEA,EURDCSPPL006,SCS,Java,https://hanas4-prd.emea.sap.nexperia.com:4380/,eurdcsppl080.nws.nexperia.com,NA,HPE Service Guard,Linux,RHEL 8
+ADS for CFIN ,Production ,AEP,83,EMEA,EURDCSPPL007,ERS,Java,https://hanas4-prd.emea.sap.nexperia.com:4380/,eurdcsppl080.nws.nexperia.com,NA,HPE Service Guard,Linux,RHEL 8
+ADS for CFIN ,Production ,AEP,80,EMEA,EURDCSPPL008,PAS,Java,https://s4java-prd.emea.sap.nexperia.com/startPage,eurdcsppl080.nws.nexperia.com,NA,NA,Linux,RHEL 8
+ADS for CFIN ,Production ,AEP,81,EMEA,EURDCSPPL009,AAS,Java,https://s4java-prd.emea.sap.nexperia.com/startPage,eurdcsppl080.nws.nexperia.com,NA,NA,Linux,RHEL 8
+ADS for CFIN ,Production ,H2P,80,EMEA,EURDCSPPL011,DB ,NA,https://hanas4-prd.emea.sap.nexperia.com:4380/,eurdcsppl080.nws.nexperia.com,HANA,NA,Linux,RHEL 8
+ADS for CFIN ,Production ,H2P,80,EMEA,EURDCSPPL012,DB ,NA,https://hanas4-prd.emea.sap.nexperia.com:4380/,eurdcsppl080.nws.nexperia.com,HANA,NA,Linux,RHEL 8
+LTRS,Sandbox,RSS,10,EMEA,EURDCSPSL050,PAS,ABAP,sandbox.slt.emea.sap.nexperia.com,eurdcspsl080.nws.nexperia.com,NA,NA,Linux,RHEL 8
+LTRS,Sandbox,H3S,10,EMEA,EURDCSPSL051,DB ,NA,https://hanaslt-sbx.emea.sap.nexperia.com/sap/hana/xs/admin,eurdcspsl080.nws.nexperia.com,HANA,NA,Linux,RHEL 8
+LTRS,Development ,RSD,20,EMEA,EURDCSPDL050,PAS,ABAP,dev.slt.emea.sap.nexperia.com,eurdcspdl080.nws.nexperia.com,NA,NA,Linux,RHEL 8
+LTRS,Development ,H3D,20,EMEA,EURDCSPDL051,DB ,NA,https://hanaslt-dev.emea.sap.nexperia.com/sap/hana/xs/admin,eurdcspdl080.nws.nexperia.com,HANA,NA,Linux,RHEL 8
+LTRS,Quality ,RSQ,50,EMEA,EURDCSPQL050,PAS,ABAP,qas.slt.emea.sap.nexperia.com,eurdcspql080.nws.nexperia.com,NA,NA,Linux,RHEL 8
+LTRS,Quality ,H3Q,50,EMEA,EURDCSPQL051,DB ,NA,https://hanaslt-qas.emea.sap.nexperia.com/sap/hana/xs/admin,eurdcspql080.nws.nexperia.com,HANA,NA,Linux,RHEL 8
+LTRS,Production ,H3P,80,EMEA,EURDCSPPL056,DB ,NA,https://hanas4-prd.emea.sap.nexperia.com:4380/,eurdcsppl080.nws.nexperia.com,HANA,NA,Linux,RHEL 8
+LTRS,Production ,H3P,80,EMEA,EURDCSPPL057,DB ,NA,https://hanas4-prd.emea.sap.nexperia.com:4380/,eurdcsppl080.nws.nexperia.com,HANA,NA,Linux,RHEL 8
+BW/4 HANA,Development ,B4D,20,EMEA,EURDCSPDL020,PAS,ABAP,https://bw4-dev.emea.sap.nexperia.com/sap/bc/ui2/flp,eurdcspdl080.nws.nexperia.com,NA,NA,Linux,RHEL 8
+BW/4 HANA,Development ,H4D,20,EMEA,EURDCSPDL021,DB ,NA,https://hanabw4-dev.emea.sap.nexperia.com/sap/hana/xs/admin,eurdcspdl080.nws.nexperia.com,HANA,NA,Linux,RHEL 8
+BW/4 HANA,Quality ,B4Q,50,EMEA,EURDCSPQL020,PAS,ABAP,https://bw4-qas.emea.sap.nexperia.com/sap/bc/ui2/flp,eurdcspql080.nws.nexperia.com,NA,NA,Linux,RHEL 8
+BW/4 HANA,Quality ,H4Q,50,EMEA,EURDCSPQL021,DB ,NA,https://hanabw4-qas.emea.sap.nexperia.com/sap/hana/xs/admin,eurdcspql080.nws.nexperia.com,HANA,NA,Linux,RHEL 8
+BW/4 HANA,Production ,B4P,82,EMEA,EURDCSPPL021,ASCS,ABAP,https://bw4-prd.emea.sap.nexperia.com/sap/bc/ui2/flp,eurdcsppl080.nws.nexperia.com,NA,HPE Service Guard,Linux,RHEL 8
+BW/4 HANA,Production ,B4P,83,EMEA,EURDCSPPL022,ERS,ABAP,https://bw4-prd.emea.sap.nexperia.com/sap/bc/ui2/flp,eurdcsppl080.nws.nexperia.com,NA,HPE Service Guard,Linux,RHEL 8
+BW/4 HANA,Production ,B4P,80,EMEA,EURDCSPPL023,PAS,ABAP,https://bw4-prd.emea.sap.nexperia.com/sap/bc/ui2/flp,eurdcsppl080.nws.nexperia.com,NA,NA,Linux,RHEL 8
+BW/4 HANA,Production ,B4P,81,EMEA,EURDCSPPL024,AAS,ABAP,https://bw4-prd.emea.sap.nexperia.com/sap/bc/ui2/flp,eurdcsppl080.nws.nexperia.com,NA,NA,Linux,RHEL 8
+BW/4 HANA,Production ,H4P,80,EMEA,EURDCSPPL026,DB ,NA,https://hanabw4-prd.emea.sap.nexperia.com:4380/,eurdcsppl080.nws.nexperia.com,HANA,NA,Linux,RHEL 8
+BW/4 HANA,Production ,H4P,80,EMEA,EURDCSPPL027,DB ,NA,https://hanabw4-prd.emea.sap.nexperia.com:4380/,eurdcsppl080.nws.nexperia.com,HANA,NA,Linux,RHEL 8
+SOLMAN,Production ,SOP,82,EMEA,EURDCSPPL071,ASCS,ABAP,https://solman-prd.emea.sap.nexperia.com/sap/bc/ui2/flp,,NA,HPE Service Guard,Linux,RHEL 8
+SOLMAN,Production ,SOP,83,EMEA,EURDCSPPL072,ERS,ABAP,https://solman-prd.emea.sap.nexperia.com/sap/bc/ui2/flp,,NA,HPE Service Guard,Linux,RHEL 8
+SOLMAN,Production ,SOP,80,EMEA,EURDCSPPL073,PAS,ABAP,https://solman-prd.emea.sap.nexperia.com/sap/bc/ui2/flp,,NA,NA,Linux,RHEL 8
+SOLMAN,Production ,SOP,81,EMEA,EURDCSPPL074,AAS,ABAP,https://solman-prd.emea.sap.nexperia.com/sap/bc/ui2/flp,,NA,NA,Linux,RHEL 8
+SOLMAN,Production ,AOP,82,EMEA,EURDCSPPL076,SCS,JAVA,https://solmanjava-prd.emea.sap.nexperia.com/startPage,,NA,HPE Service Guard,Linux,RHEL 8
+SOLMAN,Production ,AOP,83,EMEA,EURDCSPPL077,ERS,JAVA,https://solmanjava-prd.emea.sap.nexperia.com/startPage,,NA,HPE Service Guard,Linux,RHEL 8
+SOLMAN,Production ,AOP,80,EMEA,EURDCSPPL078,PAS,JAVA,https://solmanjava-prd.emea.sap.nexperia.com/startPage,,NA,NA,Linux,RHEL 8
+SOLMAN,Production ,AOP,81,EMEA,EURDCSPPL079,AAS,JAVA,https://solmanjava-prd.emea.sap.nexperia.com/startPage,,NA,NA,Linux,RHEL 8
+SOLMAN,Production ,H0P,80,EMEA,EURDCSPPL171,DB,NA,https://hanasolman-prd.emea.sap.nexperia.com:4380/,,HANA,NA,Linux,RHEL 8
+SOLMAN,Production ,H0P,80,EMEA,EURDCSPPL172,DB,NA,https://hanasolman-prd.emea.sap.nexperia.com:4380/,,HANA,NA,Linux,RHEL 8
+Cloud Connector,Development ,NA,NA,EMEA,EURDC01SPDM002,SAP Cloud Connector,NA,https://eurdc01spdm002:8443/,NA,NA,NA,Windows,Windows 2019 Server (64-bit)
+Cloud Connector,Quality,NA,NA,EMEA,EURDC01SPQM002,SAP Cloud Connector,NA,https://eurdc01spqm002:8443/,NA,NA,NA,Windows,Windows 2019 Server (64-bit)
+Cloud Connector,Production Master,NA,NA,EMEA,EURDC01SPPM004,SAP Cloud Connector,NA,https://eurdc01sppm004.nws.nexperia.com:8443/,NA,NA,NA,Windows,Windows 2019 Server (64-bit)
+Cloud Connector,Production Slave,NA,NA,EMEA,EURDC01SPPM004,SAP Cloud Connector,NA,https://eurdc01sppm005.nws.nexperia.com:8443/,NA,NA,NA,Windows,Windows 2019 Server (64-bit)
+Cloud Connector,Sandbox,NA,NA,EMEA,EURDCSPSL090,Mendix - SAP Cloud Connector,NA,https://eurdcspsl090.nws.nexperia.com:8443/,NA,NA,NA,Linux,RHEL 8
+Cloud Connector,Development ,NA,NA,EMEA,EURDCSPDL090,Mendix - SAP Cloud Connector,NA,https://eurdcspdl090.nws.nexperia.com:8443/,NA,NA,NA,Linux,RHEL 8
+Cloud Connector,Quality,NA,NA,EMEA,EURDCSPQL090,Mendix - SAP Cloud Connector,NA,https://eurdcspql090.nws.nexperia.com:8443/,NA,NA,NA,Linux,RHEL 8
+Cloud Connector,Production Master,NA,NA,EMEA,EURDCSPPL090,Mendix - SAP Cloud Connector,NA,https://eurdcsppl090.nws.nexperia.com:8443/,NA,NA,NA,Linux,RHEL 8
+Cloud Connector,Production Slave,NA,NA,EMEA,EURDCSPPL091,Mendix - SAP Cloud Connector,NA,https://eurdcsppl091.nws.nexperia.com:8443/,NA,NA,NA,Linux,RHEL 8
+ECC,Production,NEP,NA,LONDON,,Persona,NA,https://erp.sap.nexperia.com/sap/bc/personas ,,,,,
+ECC,Quality,NEQ,NA,LONDON,,Persona,NA,https://qa.erp.sap.nexperia.com/sap/bc/personas ,,,,,
+ECC,Quality,NEQ,,LONDON,,Webgui,NA,https://qa.erp.sap.nexperia.com/sap/bc/gui/sap/its/webgui?,,,,,
+ECC,Development ,NED,,LONDON,,Webgui,NA,https://dev.erp.sap.nexperia.com:1443/sap/bc/gui/sap/its/webgui?,,,,,
+ECC,Test,NET,NA,LONDON,,Webgui,NA,https://qaewm.erp.sap.nexperia.com:1443/sap/bc/gui/sap/its/webgui?,,,,,
+ECC,Validation,NEV,NA,LONDON,,Webgui,NA,https://validation.erp.sap.nexperia.com:1443/sap/bc/gui/sap/its/webgui?,,,,,
+ECC,Development ,NED,NA,LONDON,,Persona,NA,https://dev.erp.sap.nexperia.com:1443/sap/bc/personas    ,,,,,
+ECC,Sandbox,NES,NA,LONDON,,Persona,NA,https://sandbox.erp.sap.nexperia.com:1443/sap/bc/personas,,,,,
+ECC,Test,NET,NA,LONDON,,Persona,NA,https://qaewm.erp.sap.nexperia.com:1443/sap/bc/personas,,,,,
+ECC,Validation,NEV,NA,LONDON,,Persona,NA,https://validation.erp.sap.nexperia.com:1443/sap/bc/personas,,,,,
+ECC,Production,NEP,NA,LONDON,,Slipstream,NA,https://erp.sap.nexperia.com/sap/bc/se/m/mainapp/ClientBin/index.html? ,,,,,
+ECC,Quality,NEQ,NA,LONDON,,Slipstream,NA,https://qa.erp.sap.nexperia.com/sap/bc/se/m/mainapp/ClientBin/index.html? ,,,,,
+ECC,Development ,NED,NA,LONDON,,Webgui,NA,https://dev.erp.sap.nexperia.com:1443/sap/bc/gui/sap/its/webgui?,,,,,
+ECC,Sandbox,NES,NA,LONDON,,Slipstream,NA,https://sandbox.erp.sap.nexperia.com:1443/sap/bc/se/m/mainapp/ClientBin/index.html? ,,,,,
+ECC,Production,NEP,NA,LONDON,,Webgui,NA,https://erp.sap.nexperia.com/sap/bc/gui/sap/its/webgui?,,,,,
+ECC,Production,NEP,NA,LONDON,,Webdispatcher,NA,https://erp.sap.nexperia.com/sap/admin/public/default.html ,,,,,
+ECC,Quality,NEQ,NA,LONDON,,Webdispatcher,NA,https://qa.erp.sap.nexperia.com/sap/admin/public/default.html ,,,,,
+ECC,Sandbox,NES,NA,LONDON,,Content Server,NA,https://sandbox.erp.sap.nexperia.com:1091/sap/admin/public/default.html ,,,,,
+ECC,EWM Test,NET,NA,LONDON,,Content Server,NA,https://qaewm.erp.sap.nexperia.com:1091/sap/admin/public/default.html,,,,,
+ECC,Validation,NEV,NA,LONDON,,Content Server,NA,https://validation.erp.sap.nexperia.com:1091/sap/admin/public/default.html,,,,,
+ECC,Development ,NED,NA,LONDON,,Content Server,NA,https://dev.erp.sap.nexperia.com:1091/sap/admin/public/default.html,,,,,
+ECC,Quality,NEQ,NA,LONDON,,Content Server,NA,https://qa.erp.sap.nexperia.com:1091/sap/admin/public/default.html ,,,,,
+ECC,Production,NEP,NA,LONDON,,Content Server,NA,https://erp.sap.nexperia.com:1091/sap/admin/public/default.html ,,,,,
+GRC,Production,NGP,NA,EMEA,,PAS,NA,https://grc-prd.emea.sap.nexperia.com/sap/bc/ui2/flp,,,,,
+GRC,Development ,NGD,NA,EMEA,,NWBC,NA,https://grc-dev.emea.sap.nexperia.com/ui2/nwbc/~launch/?sap-client=100&sap-language=EN,,,,,
+GRC,Quality,NGQ,NA,EMEA,,NWBC,NA,https://grc-qas.emea.sap.nexperia.com/ui2/nwbc/~launch/?sap-client=400&sap-language=EN,,,,,
+GRC,Production,NGP,NA,EMEA,,NWBC,NA,https://grc-prd.emea.sap.nexperia.com/ui2/nwbc/~launch/?sap-client=400&sap-language=EN,,,,,
+BW on HANA,Production,NBP,80/81,EMEA,,IRJ,ABAP,https://sapbw.nexperia.com/irj/portal,,NA,HPE Service Guard,Linux,RHEL 8
+BW on HANA,Quality,NBQ,50/51,EMEA,,IRJ,ABAP,https://sapbwqa.nexperia.com/irj/portal,,NA,HPE Service Guard,Linux,RHEL 8
+BW on HANA,Development ,NBD,20,EMEA,,IRJ,ABAP,https://sapbwdev.nexperia.com:8443/irj/portal ,,NA,NA,Linux,RHEL 8
+BW on HANA,Production,NJP,80/81,EMEA,,NWA JAVA,JAVA,https://sapbw.nexperia.com/startPage,https://sapbw.nexperia.com/,NA,HPE Service Guard,Linux,RHEL 8
+BW on HANA,Quality,NJQ,50/51,EMEA,,NWA JAVA,JAVA,https://sapbwqa.nexperia.com/startPage,,NA,HPE Service Guard,Linux,RHEL 8
+BW on HANA,Development ,NJD,20,EMEA,,NWA JAVA,JAVA,https://sapbwdev.nexperia.com:8443/startPage,,NA,NA,Linux,RHEL 8
+BW on HANA,Quality,NHQ,50,EMEA,,QA HANA,NA,https://qa.bwhana.sap.nexperia.com:4350/,,HANA,HPE Service Guard,Linux,RHEL 8
+BW on HANA,Development ,NHD,20,EMEA,,DEV HANA,NA,https://dev.bwhana.sap.nexperia.com:4320/,,HANA,NA,Linux,RHEL 8
+BW on HANA,Production,NHP,80,EMEA,,PROD HANA,NA,https://bwhana.sap.nexperia.com:4380/,,HANA,HPE Service Guard,Linux,RHEL 8
+Fiori,Development ,NFD,20,EMEA,EURDCSPDL141,PAS,ABAP,https://dev.launchpad.sap.nexperia.com/sap/bc/ui2/flp?sap-client=110&sap-language=EN#Shell-home,,,,,
+Fiori,Development ,H7D,20,EMEA,eurdcspdl142,DB ,NA,,,,,,
+Fiori,Quality,NFQ,50,EMEA,EURDCSPQL143,PAS,NA,https://qa.launchpad.sap.nexperia.com/sap/bc/ui2/flp?sap-client=510&sap-language=EN ,,,,,
+Fiori,Quality,NFQ,51,EMEA,EURDCSPQL144,AAS,NA,https://qa.launchpad.sap.nexperia.com/sap/bc/ui2/flp?sap-client=510&sap-language=EN ,,,,,
+Fiori,Quality,NFQ,52,EMEA,EURDCSPQL141,ASCS,NA,https://qa.launchpad.sap.nexperia.com/sap/bc/ui2/flp?sap-client=510&sap-language=EN ,,,,,
+Fiori,Quality,NFQ,53,EMEA,EURDCSPQL142,ERS,NA,https://qa.launchpad.sap.nexperia.com/sap/bc/ui2/flp?sap-client=510&sap-language=EN ,,,,,
+Fiori,Quality,H7Q,50,EMEA,EURDCSPQL145,DB ,NA,,,,,,
+Fiori,Quality,H7Q,50,EMEA,EURDCSPQL146,DB ,NA,,,,,,
+Fiori,Production,NFP,80,EMEA,EURDCSPPL143,PAS,NA,https://launchpad.sap.nexperia.com/sap/bc/ui2/flp?sap-client=510&sap-language=EN ,,,,,
+Fiori,Production,NFP,81,EMEA,EURDCSPPL144,AAS,NA,https://launchpad.sap.nexperia.com/sap/bc/ui2/flp?sap-client=510&sap-language=EN ,,,,,
+Fiori,Production,NFP,82,EMEA,EURDCSPPL141,ASCS,NA,https://launchpad.sap.nexperia.com/sap/bc/ui2/flp?sap-client=510&sap-language=EN ,,,,,
+Fiori,Production,NFP,83,EMEA,EURDCSPPL142,ERS,NA,https://launchpad.sap.nexperia.com/sap/bc/ui2/flp?sap-client=510&sap-language=EN ,,,,,
+Fiori,Production,H7P,80,EMEA,EURDCSPPL145,DB ,NA,,,,,,
+Fiori,Production,H7P,80,EMEA,EURDCSPPL146,DB ,NA,,,,,,
+SEMBCS,Development ,H6D,,,,,,,,,,,
+SEMBCS,Production,H6P,,,,,,,,,,,
+SEMBCS,Quality,H6Q,,,,,,,,,,,
+ECC,,NEH,,,,,,,,,,,
+SEMBCS,Development ,NSD,,,,,,,,,,,
+SEMBCS,Production,NSP,,,,,,,,,,,
+SEMBCS,Quality,NSQ,,,,,,,,,,,
+LTRS,Production,RSP,,,,,,,,,,,
+,,COQ,,,,,,,,,,,
+,,D1S,,,,,,,,,,,

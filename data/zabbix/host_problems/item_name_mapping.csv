@@ -1,0 +1,154 @@
+﻿name,category
+Free memory in %,Available Memory (%)
+"Cisco Switch Fan - Switch 3 - FAN - T1 1, Normal",Network Switch
+CPU utilization,CPU Utilization
+Memory: Used %,Memory Utilization (%)
+Cisco Switch Fan - Switch 8 - FAN - T1 2,Network Switch
+Free swap space %,Available Swap Space (%)
+"Cisco Switch Fan - Switch#5, Fan#1",Network Switch
+"Cisco Switch Fan - Switch 2 - FAN - T1 1, Normal",Network Switch
+"Cisco Switch Fan - Switch 4 - FAN - T1 2, Normal",Network Switch
+Cisco Switch Fan - Switch 3 - FAN - T1 3,Network Switch
+Cisco Switch Fan - Chassis 2 Fan 2/1,Network Switch
+Host CPU Utilization %,CPU Utilization
+Cisco Switch Fan - Switch 6 - FAN - T1 3,Network Switch
+"Cisco Switch Fan - Switch#3, Fan#1",Network Switch
+Total memory,Total Memory (val)
+Total swap space,Total Swap Space (val)
+"Cisco Switch Fan - Switch 2 - FAN - T1 2, Normal",Network Switch
+"Free virtual memory, in %",Available Memory (%)
+FS [/usr/sap/WAP]: Option: Read-only,File System
+"Cisco Switch Fan - Switch 1 - FAN - T1 2, Normal",Network Switch
+Cisco Switch Fan - Switch 4 - FAN - T1 1,Network Switch
+"FS [/boot]: Inodes: Free, in %",File System - Available (%)
+"Cisco Switch Fan - Switch 5 - FAN - T1 1, Normal",Network Switch
+FS [/usr/sap]: Option: Read-only,File System
+Processor load,CPU Utilization
+FS [/pg_data]: Option: Read-only,File System
+Cisco Switch Fan - Chassis 1 Fan 2/5,Network Switch
+Memory: Available %,Available Memory (%)
+Cisco Switch Fan - Switch 5 - FAN - T1 2,Network Switch
+"FS [/opt]: Inodes: Free, in %",File System - Available (%)
+Cisco Switch Fan - Chassis 1 Fan 2/2,Network Switch
+FS [/var]: Option: Read-only,File System
+CPU: Load PC (5m),CPU Load Average (5m)
+Cisco Switch Fan - Switch 5 - FAN - T1 1,Network Switch
+Processor load (1 min average),CPU Load Average (1m)
+Host name,Host Name
+Cisco Switch Fan - Chassis 1 Fan 2/3,Network Switch
+Zabbix agent status,Zabbix
+FS [/]: Option: Read-only,File System
+Cisco Switch Fan - Fan 2/3,Network Switch
+Zabbix agent version,Zabbix
+Cisco Switch Fan - Switch 6 - FAN - T1 1,Network Switch
+Cisco Switch Fan - Fan 2/1,Network Switch
+Host uptime,Host Uptime
+"Cisco Switch Fan - Switch#8, Fan#1",Network Switch
+"Cisco Switch Fan - Switch 7 - FAN - T1 1, Normal",Network Switch
+Cisco Switch Fan - Switch 4 - FAN - T1 2,Network Switch
+Cisco Switch Fan - Fan Tray 0,Network Switch
+Cisco Switch Fan - Chassis 1 Fan 2/0,Network Switch
+"FS [/]: Space: Used, in %",File System - Used (%)
+Cisco Switch Fan - Switch 7 - FAN - T1 3,Network Switch
+"Cisco Switch Fan - Switch#6, Fan#1",Network Switch
+Cisco Switch Fan - Switch 7 - FAN - T1 2,Network Switch
+"Cisco Switch Fan - Switch 3 - FAN - T1 2, Normal",Network Switch
+Cisco Switch Fan -  Chassis Fan Tray 1,Network Switch
+CPU: Load PC (1m),CPU Load Average (1m)
+"FS [/usr]: Inodes: Free, in %",File System - Available (%)
+FS [/tmp]: Option: Read-only,File System
+Cisco Switch Fan - Fan 2/2,Network Switch
+"FS [/home]: Space: Used, in %",File System - Used (%)
+"FS [/usr]: Space: Used, in %",File System - Used (%)
+"Cisco Switch Fan - Switch 1 - FAN - T1 3, Normal",Network Switch
+Cisco Switch Fan -  Power Supply 1 Fan,Network Switch
+Cisco Switch Fan - Switch 3 - FAN - T1 2,Network Switch
+CPU Load,CPU Utilization
+"FS [/usr/sap/WAP]: Inodes: Free, in %",File System - Available (%)
+Cisco Switch Fan - Chassis 2 Fan 2/5,Network Switch
+Cisco Switch Fan - Fan 0/0,Network Switch
+"Cisco Switch Fan - Switch 7 - FAN - T1 2, Normal",Network Switch
+"FS [/softwares]: Space: Used, in %",File System - Used (%)
+Cisco Switch Fan - Switch 1 - FAN - T1 2,Network Switch
+"Cisco Switch Fan - Switch 8 - FAN - T1 1, Normal",Network Switch
+"Cisco Switch Fan - Switch#7, Fan#1",Network Switch
+"Cisco Switch Fan - Switch 2 - FAN - T1 3, Normal",Network Switch
+Cisco Switch Fan - Switch 8 - FAN - T1 1,Network Switch
+Cisco Switch Fan - Chassis 1 Fan 2/4,Network Switch
+"Cisco Switch Fan - Switch#2, Fan#1",Network Switch
+FS [/var/log]: Option: Read-only,File System
+Load average (1m avg),CPU Load Average (1m)
+Cisco Switch Fan -  Power Supply 2 Fan,Network Switch
+Cisco Switch Fan - Chassis 2 Fan Tray,Network Switch
+Free memory,Available Memory (val)
+Cisco Switch Fan - Switch 8 - FAN - T1 3,Network Switch
+"Cisco Switch Fan - Switch 6 - FAN - T1 2, Normal",Network Switch
+"Cisco Switch Fan - Switch 4 - FAN - T1 3, Normal",Network Switch
+"FS [/var]: Space: Used, in %",File System - Used (%)
+Cisco Switch Fan - Switch 2 - FAN - T1 2,Network Switch
+Cisco Switch Fan - Switch 1 - FAN - T1 1,Network Switch
+Available memory,Available Memory (val)
+"Cisco Switch Fan - Switch 4 - FAN - T1 1, Normal",Network Switch
+Cisco Switch Fan - Switch 6 - FAN - T1 2,Network Switch
+"FS [/var]: Inodes: Free, in %",File System - Available (%)
+Cisco Switch Fan - Switch 2 - FAN - T1 1,Network Switch
+"FS [/tmp]: Inodes: Free, in %",File System - Available (%)
+Free swap space,Free Swap Space (val)
+Memory utilization,Memory Utilization (%)
+Cisco Switch Fan - Fan 2/0,Network Switch
+Cisco Switch Fan - Switch 3 - FAN - T1 1,Network Switch
+"FS [/usr/sap]: Inodes: Free, in %",File System - Available (%)
+Cisco Switch Fan - Switch 1 - FAN - T1 3,Network Switch
+Cisco Switch Fan - Chassis 1 Fan 2/1,Network Switch
+Cisco Switch Fan - Switch 2 - FAN - T1 3,Network Switch
+Cisco Switch Fan - Chassis 2 Fan 2/2,Network Switch
+Load average (5m avg),CPU Load Average (5m)
+"FS [/opt/HCL]: Space: Used, in %",File System - Used (%)
+Cisco Switch Fan - Chassis 2 Fan 2/4,Network Switch
+Load average (15m avg),CPU Load Average (15m)
+FS [/home]: Option: Read-only,File System
+"Cisco Switch Fan - Switch 1 - FAN - T1 1, Normal",Network Switch
+"FS [/home]: Inodes: Free, in %",File System - Available (%)
+"Cisco Switch Fan - Switch 8 - FAN - T1 2, Normal",Network Switch
+"Cisco Switch Fan - Switch#4, Fan#1",Network Switch
+Cisco Switch Fan - Chassis 2 Fan 2/3,Network Switch
+"FS [/tmp]: Space: Used, in %",File System - Used (%)
+Cisco Switch Fan - Chassis 1 Fan Tray,Network Switch
+"FS [/opt]: Space: Used, in %",File System - Used (%)
+Cisco Switch Fan - Fan 1/0,Network Switch
+Cisco Switch Fan - Fan 3/1,Network Switch
+FS [/usr]: Option: Read-only,File System
+"Cisco Switch Fan - Switch 3 - FAN - T1 3, Normal",Network Switch
+"FS [/pg_bin]: Space: Used, in %",File System - Used (%)
+Free swap space in %,Available Swap Space (%)
+"FS [/var/log]: Inodes: Free, in %",File System - Available (%)
+FS [/opt/HCL]: Option: Read-only,File System
+"FS [/usr/sap]: Space: Used, in %",File System - Used (%)
+Cisco Switch Fan - Fan 3/0,Network Switch
+"Cisco Switch Fan - Switch#1, Fan#2",Network Switch
+"FS [/usr/sap/WAP]: Space: Used, in %",File System - Used (%)
+"FS [/softwares]: Inodes: Free, in %",File System - Available (%)
+"FS [/opt/HCL]: Inodes: Free, in %",File System - Available (%)
+CPU: Load PC (15m),CPU Load Average (15m)
+Used memory %,Memory Utilization (%)
+FS [/softwares]: Option: Read-only,File System
+"Cisco Switch Fan - Switch 5 - FAN - T1 2, Normal",Network Switch
+Cisco Switch Fan - Fan Tray 1,Network Switch
+FS [/pg_bin]: Option: Read-only,File System
+"Cisco Switch Fan - Switch#1, Fan#1",Network Switch
+Cisco Switch Fan - Switch 7 - FAN - T1 1,Network Switch
+"FS [/boot]: Space: Used, in %",File System - Used (%)
+Cisco Switch Fan - Fan 3/2,Network Switch
+"FS [/pg_bin]: Inodes: Free, in %",File System - Available (%)
+FS [/boot]: Option: Read-only,File System
+Cisco Switch Fan - Switch 5 - FAN - T1 3,Network Switch
+"FS [/]: Inodes: Free, in %",File System - Available (%)
+"FS [/var/log]: Space: Used, in %",File System - Used (%)
+"Cisco Switch Fan - Switch 6 - FAN - T1 1, Normal",Network Switch
+"FS [/pg_data]: Inodes: Free, in %",File System - Available (%)
+"FS [/pg_data]: Space: Used, in %",File System - Used (%)
+Cisco Switch Fan - Switch 4 - FAN - T1 3,Network Switch
+Swap space utilization in (%),Swap Space Utilization (%)
+Cisco Switch Fan - Chassis 2 Fan 2/0,Network Switch
+Cisco Switch Fan - Fan 3/3,Network Switch
+FS [/opt]: Option: Read-only,File System

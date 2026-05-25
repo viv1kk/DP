@@ -1,0 +1,270 @@
+pipelines:
+  ZABBIX_HOST_GROUP:
+    auth_api: 
+      method: GET
+      auth_payload: |
+        {
+          "jsonrpc": "2.0",
+          "method": "user.login",
+          "params": {"username": "", "password": ""},
+          "id": 2
+        }
+      auth_header: | 
+        {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer auth_token"  
+        }
+
+    api:
+      base_url: "https://eurdc01zbx04.eu-rdc01.nexperia.com/zabbix/api_jsonrpc.php"
+      method: POST
+
+      payload: |
+        {
+          "jsonrpc": "2.0",
+          "method": "hostgroup.get",
+          "params": {
+              "output": "extend",
+              "selectHosts": "count"
+          },
+          "id": 2
+        }
+      retry_count: 3
+      timeout: 30
+
+    api_credentials:
+      username: ${ZABBIX_USERNAME}
+      password: ${ZABBIX_PASSWORD}
+      auth_token: ${ZABBIX_API_TOKEN}
+      
+    destination:
+      sql_table_name: "ZBX_HOST_GROUP"
+      sql_pk: ["groupid"]
+      sql_pk_constraint_name: "PK_ZBX_HOST_GROUP"
+      sql_columnar_index_name: ""
+      sql_columns: |
+        {
+          "groupid": "VARCHAR(8)",
+          "name": "NVARCHAR(64)",
+          "flags": "INT",
+          "uuid": "VARCHAR(32)",
+          "hosts": "INT"
+        }
+  ZABBIX_HOSTS:
+    auth_api: 
+      method: GET
+      auth_payload: |
+        {
+          "jsonrpc": "2.0",
+          "method": "user.login",
+          "params": {"username": "", "password": ""},
+          "id": 2
+        }
+      auth_header: | 
+        {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer auth_token"  
+        }
+
+    api:
+      base_url: "https://eurdc01zbx04.eu-rdc01.nexperia.com/zabbix/api_jsonrpc.php"
+      method: POST
+
+      payload: |
+        {
+          "host_with_group" : {
+              "jsonrpc": "2.0",
+              "method": "hostgroup.get",
+              "params": {
+                  "output": ["groupid", "name"],
+                      "selectHosts": ["hostid", "name", "status"]
+              },
+              "id": 2
+            },
+          "host_availability" : {
+              "jsonrpc": "2.0",
+              "method": "hostinterface.get",
+              "params": {
+                  "output": ["hostid", "interfaceid", "available", "error"]
+              },
+              "id": 3
+            }
+        }
+        
+      retry_count: 3
+      timeout: 30
+
+    api_credentials:
+      username: ${ZABBIX_USERNAME}
+      password: ${ZABBIX_PASSWORD}
+      auth_token: ${ZABBIX_API_TOKEN}
+      
+    destination:
+      sql_table_name: "ZBX_HOSTS"
+      sql_pk: ["groupid", "hostid"]
+      sql_pk_constraint_name: "PK_ZBX_HOSTS"
+      sql_columnar_index_name: ""
+      sql_columns: |
+        {
+          "hostid": "VARCHAR(8)",
+          "host_name": "VARCHAR(64)",
+          "host_name_short": "VARCHAR(64)",
+          "host_name_short_for_CMDB": "VARCHAR(64)",
+          "status": "VARCHAR(2)",
+          "group_name": "NVARCHAR(64)",
+          "groupid": "VARCHAR(8)",
+          "interfaceid": "VARCHAR(8)",
+          "available": "VARCHAR(2)",
+          "error": "NVARCHAR(2000)",
+          "last_poll_at_IST": "DATETIME2(0)"
+        }
+  ZABBIX_SERVICE_MONITORING:
+    auth_api: 
+      method: GET
+      auth_payload: |
+        {
+          "jsonrpc": "2.0",
+          "method": "user.login",
+          "params": {"username": "", "password": ""},
+          "id": 2
+        }
+      auth_header: | 
+        {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer auth_token"  
+        }
+
+    api:
+      base_url: "https://eurdc01zbx04.eu-rdc01.nexperia.com/zabbix/api_jsonrpc.php"
+      method: POST
+
+      payload: |
+        {
+          "jsonrpc": "2.0",
+          "method": "item.get",
+          "params": {
+              "output": [
+                  "itemid", "hostid", "name", "key_", "value_type",
+                  "lastvalue", "lastclock", "status", "delay", "error", "units"
+              ],
+              "itemids": [],
+              "with_triggers": true,
+              "monitored": true,
+              "selectHosts": ["host"],
+              "sortfield": "itemid",
+              "sortorder": "ASC"
+          },
+          "id": 1
+        }
+        
+      retry_count: 3
+      timeout: 30
+
+    api_credentials:
+      username: ${ZABBIX_USERNAME}
+      password: ${ZABBIX_PASSWORD}
+      auth_token: ${ZABBIX_API_TOKEN}
+      
+    destination:
+      sql_table_name: "BACC_Service_Monitoring"
+      sql_pk: ["item_id"]
+      sql_pk_constraint_name: "PK_BACC_Service_Monitoring"
+      sql_columnar_index_name: ""
+      sql_columns: |
+        {
+          "item_id": "INT",
+          "host_id": "VARCHAR(16)",
+          "host_name": "VARCHAR(64)",
+          "item_key": "VARCHAR(255)",
+          "item_name": "VARCHAR(255)",
+          "item_delay": "VARCHAR(8)",
+          "value_type": "VARCHAR(32)",
+          "item_status": "VARCHAR(32)",
+          "lastvalue_num": "FLOAT",
+          "service_status": "VARCHAR(32)",
+          "lastvalue_str": "VARCHAR(255)",
+          "lastclock_CET": "DATETIME2(0)",
+          "lastclock_IST": "DATETIME2(0)",
+          "last_poll_at_IST": "DATETIME2(0)"
+        }
+  ZABBIX_HOST_PROBLEMS:
+    auth_api: 
+      method: GET
+      auth_payload: |
+        {
+          "jsonrpc": "2.0",
+          "method": "user.login",
+          "params": {"username": "", "password": ""},
+          "id": 2
+        }
+      auth_header: | 
+        {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer auth_token"  
+        }
+
+    api:
+      base_url: "https://eurdc01zbx04.eu-rdc01.nexperia.com/zabbix/api_jsonrpc.php"
+      method: POST
+
+      payload: |
+        {
+          "active_problems" : {
+            "jsonrpc": "2.0",
+            "method": "problem.get",
+            "params": {
+              "output": "extend",
+              "recent": true,
+              "time_from": 0,
+              "selectTags": "extend",
+              "selectAcknowledges": "extend"
+            },
+            "id": 1
+          },
+          "triggers" : {
+            "jsonrpc": "2.0",
+            "method": "trigger.get",
+            "params": {
+                "triggerids": [],
+                "output": ["triggerid", "description"],
+                "selectHosts": ["hostid", "host"],
+                "selectItems": ["itemid", "key_", "name", "delay"]
+            },
+            "id": 3
+          }
+        }
+        
+      retry_count: 3
+      timeout: 30
+
+    api_credentials:
+      username: ${ZABBIX_USERNAME}
+      password: ${ZABBIX_PASSWORD}
+      auth_token: ${ZABBIX_API_TOKEN}
+      
+    destination:
+      sql_table_name: "ZBX_HOST_PROBLEMS"
+      sql_pk: ["eventid", "item_id"]
+      sql_pk_constraint_name: "PK_ZBX_HOST_PROBLEMS"
+      sql_columnar_index_name: ""
+      sql_columns: |
+        {
+          "eventid": "VARCHAR(16)",
+          "problem_time_CET": "DATETIME2(0)",
+          "problem_time_IST": "DATETIME2(0)",
+          "severity": "INT",
+          "acknowledged": "INT",
+          "suppressed": "INT",
+          "host_name": "VARCHAR(64)",
+          "host_name_short": "VARCHAR(64)",
+          "category": "VARCHAR(255)",
+          "host_id": "VARCHAR(16)",
+          "item_id": "VARCHAR(16)",
+          "item_key": "VARCHAR(255)",
+          "item_name": "VARCHAR(255)",
+          "item_delay": "VARCHAR(8)",
+          "servicenow_ticket": "VARCHAR(16)",
+          "servicenow_ticket_link": "VARCHAR(512)",
+          "problem_name": "NVARCHAR(1000)",
+          "clock": "INT"
+        }

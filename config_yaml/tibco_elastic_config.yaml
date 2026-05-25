@@ -1,0 +1,307 @@
+pipelines:
+  TIBCO_AUDIT_OPERATIONAL_ERRORS:
+    index:
+      endpoint: http://eurdc01eapl025.nws.nexperia.com:9200/events/_search
+      method: POST
+      payload: | 
+        {
+          "query": {
+              "bool": {
+                  "must": [
+                      {
+                          "terms": {
+                              "elasticEvent.logtype.keyword": ["AUDIT_ERROR", "ADB_N", "ADB_OPQ", "ADB_F"]
+                          }
+                      }
+                  ]
+              }
+          },
+          "sort": [
+              {
+                  "elasticEvent.timestamp": {
+                      "order": "asc",
+                      "format": "strict_date_optional_time"
+                  }
+              }
+          ],
+          "size": 25000
+        }
+      header: |
+       {"Content-Type": "application/json"}
+      
+      size: 25000
+    
+    timeout: 30
+
+    api_credentials:
+      username: ${ELASTIC_USERNAME}
+      password: ${ELASTIC_PASSWORD}
+
+    destination:
+      sql_table_name: TIBCO_EVENTS_OPERATIONAL_ERRORS
+      sql_pk: ["_id"]
+      sql_pk_constraint_name: PK_TIBCO_ES_OPERATIONAL_ERRORS
+      sql_columnar_index_name: ncci_TIBCO_EVENTS_OPERATIONAL_ERRORS
+      sql_columns: |
+        {
+          "primary_hash": "VARCHAR(255)",
+          "_id": "NVARCHAR(255)",
+          "interfaceid": "NVARCHAR(255)",
+          "enginename": "NVARCHAR(255)",
+          "componenttype": "NVARCHAR(32)",
+          "machinename": "NVARCHAR(128)",
+          "businessobject": "NVARCHAR(255)",
+          "businessobjectid": "NVARCHAR(64)",
+          "subbusinessobject": "NVARCHAR(64)",
+          "correlationid": "NVARCHAR(255)",
+          "logtype": "NVARCHAR(64)",
+          "timestamp": "NVARCHAR(64)",
+          "logdetails_logpath": "NVARCHAR(1024)",
+          "logdetails_messagecode": "NVARCHAR(4000)",
+          "logdetails_msg": "NVARCHAR(MAX)",
+          "logdetails_recoverableflag": "NVARCHAR(255)",
+          "servername": "NVARCHAR(64)",
+          "Operation_User": "NVARCHAR(255)",
+          "Operation_Action": "VARCHAR(64)",
+          "Operation_Timestamp": "VARCHAR(35)",
+          "Operation_SNC_Ticket": "VARCHAR(20)",
+          "Operation_Comments": "NVARCHAR(500)",
+          "Operation_JobNumber": "NVARCHAR(150)",
+          "formatted_timestamp": "DATETIME",
+          "minutes_since_created": "INTEGER",
+          "event_timeslot_10min": "DATETIME",
+          "formatted_timestamp_CET": "DATETIME",
+          "formatted_timestamp_IST": "DATETIME",
+          "search_field": "VARCHAR(8000)"
+        }
+  
+  TIBCO_HAWK:
+    index:
+      endpoint: http://eurdc01eapl025.nws.nexperia.com:9200/tibco_hawk*/_search
+      method: POST
+      payload: | 
+        {
+          "query": {
+            "match_all": {
+                
+            }
+          },
+          "size": 10000
+        }
+      header: |
+       {"Content-Type": "application/json"}
+      
+      size: 10000
+    
+    timeout: 30
+
+    api_credentials:
+      username: ${ELASTIC_USERNAME}
+      password: ${ELASTIC_PASSWORD}
+
+    destination:
+      sql_table_name: TIBCO_HAWK
+      sql_pk: ["_id"]
+      sql_pk_constraint_name: PK_TIBCO_HAWK
+      sql_columnar_index_name: ncci_TIBCO_HAWK
+      sql_columns: |
+        {
+          "errorType": "VARCHAR(64)",
+          "_id": "VARCHAR(255) COLLATE Latin1_General_CS_AS NOT NULL",
+          "machineName": "VARCHAR(64)",
+          "microAgent": "VARCHAR(512)",
+          "componentName": "VARCHAR(256)",
+          "LogDetails": "NVARCHAR(MAX)",
+          "dateTime": "DATETIME2(0)"
+        }
+
+  # "gt": given_timestamp   # use gte if inclusive
+  TIBCO_TRA_LOG:
+    index:
+      endpoint: http://eurdc01eapl025.nws.nexperia.com:9200/tibco_log*/_search
+      method: POST
+      payload: | 
+        {
+            "query": {
+                "range": {
+                    "@timestamp": {
+                        
+                    }
+                }
+            },
+            "sort": [
+                {
+                    "@timestamp": {
+                        "order": "asc",
+                        "format": "strict_date_optional_time"
+                    }
+                },
+                {
+                    "_id": {
+                        "order": "asc"
+                    }
+                }
+            ],
+            "size": 10000
+        }
+  
+      header: |
+       {"Content-Type": "application/json"}
+      
+      size: 10000
+    
+    timeout: 30
+
+    api_credentials:
+      username: ${ELASTIC_USERNAME}
+      password: ${ELASTIC_PASSWORD}
+
+    destination:
+      sql_table_name: TIBCO_TRA_LOG
+      sql_pk: ["_id"]
+      sql_pk_constraint_name: PK_TIBCO_TRA_LOG
+      sql_columnar_index_name: ncci_TIBCO_TRA_LOG
+      sql_columns: |
+        {
+          "app": "NVARCHAR(255)",
+          "_id": "VARCHAR(255) COLLATE Latin1_General_CS_AS NOT NULL",
+          "bw": "NVARCHAR(255)",
+          "error": "NVARCHAR(255)",
+          "errormessage": "VARCHAR(1000)",
+          "timezone": "NVARCHAR(32)",
+          "timestamp": "NVARCHAR(64)",
+          "@timestamp": "NVARCHAR(64)",
+          "message": "VARCHAR(1000)",
+          "@version": "NVARCHAR(32)",
+          "utcplus": "NVARCHAR(32)",
+          "tags": "NVARCHAR(MAX)",
+          "input.type": "NVARCHAR(64)",
+          "log.offset": "NVARCHAR(64)",
+          "log.file.path": "NVARCHAR(512)",
+          "ecs.version": "NVARCHAR(64)",
+          "agent.id": "NVARCHAR(255)",
+          "agent.type": "NVARCHAR(64)",
+          "agent.version": "NVARCHAR(64)",
+          "agent.ephemeral_id": "NVARCHAR(255)",
+          "agent.hostname": "NVARCHAR(255)",
+          "agent.name": "NVARCHAR(255)",
+          "host.ip": "NVARCHAR(64)",
+          "host.id": "NVARCHAR(255)",
+          "host.mac": "NVARCHAR(255)",
+          "host.architecture": "NVARCHAR(255)",
+          "host.os.family": "NVARCHAR(255)",
+          "host.os.kernel": "NVARCHAR(255)",
+          "host.os.type": "NVARCHAR(255)",
+          "host.os.build": "NVARCHAR(255)",
+          "host.os.version": "NVARCHAR(255)",
+          "host.os.name": "NVARCHAR(255)",
+          "host.os.platform": "NVARCHAR(255)",
+          "host.name": "NVARCHAR(255)",
+          "host.hostname": "NVARCHAR(255)",
+          "formatted_@timestamp": "DATETIME2(0)",
+          "event_timeslot_10min": "DATETIME2(0)",
+          "formatted_@timestamp_CET": "DATETIME2(0)",
+          "formatted_@timestamp_IST": "DATETIME2(0)",
+          "search": "NVARCHAR(1000)"
+        }
+
+  TIBCO_EMS:
+    index:
+      endpoint: http://eurdc01eapl025.nws.nexperia.com:9200/emscheck-*/_search
+      method: POST
+      payload: | 
+        {
+          "size": 0,
+          "query": {
+            "bool": {
+              "filter": [
+                {
+                  "terms": {
+                    "emscheck.areaname.keyword": [
+                      "A2A_EMEA",
+                      "B2B_EMEA"
+                    ]
+                  }
+                }
+              ],
+              "must_not": [
+                {
+                  "wildcard": {
+                    "emscheck.queuename.keyword": "*_BC7_*"
+                  }
+                },
+                {
+                  "prefix": {
+                    "emscheck.queuename.keyword": "$TMP$"
+                  }
+                }
+              ]
+            }
+          },
+          "aggs": {
+            "by_queue": {
+              "composite": {
+                "size": 10000,
+                "sources": [
+                  {
+                    "queue": {
+                      "terms": {
+                        "field": "emscheck.queuename.keyword"
+                      }
+                    }
+                  }
+                ]
+              },
+              "aggs": {
+                "latest_record": {
+                  "top_hits": {
+                    "size": 1,
+                    "sort": [
+                      {
+                        "emscheck.normalmessageagetimestamp": "desc"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      header: |
+       {"Content-Type": "application/json"}
+      
+      size: 10000
+    
+    timeout: 30
+
+    api_credentials:
+      username: ${ELASTIC_USERNAME}
+      password: ${ELASTIC_PASSWORD}
+
+    destination:
+      sql_table_name: TIBCO_EMS
+      sql_pk: ["_id"]
+      sql_pk_constraint_name: PK_TIBCO_EMS
+      sql_columnar_index_name: ncci_TIBCO_EMS
+      sql_columns: |
+        {
+          "interfaceid": "VARCHAR(15)",
+          "enginename": "VARCHAR(50)",
+          "areaname": "VARCHAR(20)",
+          "businessobject": "VARCHAR(20)",
+          "businessobjectid": "VARCHAR(20)",
+          "checktype": "VARCHAR(30)",
+          "envlevel": "VARCHAR(25)", 
+          "envType": "VARCHAR(10)",
+          "queuename": "VARCHAR(255)", 
+          "queuemessagecount": "INT",
+          "timestamp": "DATETIME2",
+          "maxallowedagetimestamp": "DATETIME2",
+          "oldestmessagetimestamp": "DATETIME2",
+          "normalmessageagetimestamp": "DATETIME2",
+          "queuestate": "VARCHAR(15)", 
+          "pendingmessagesizekb": "INT",
+          "messagedeliverycount": "INT",
+          "attributes": "NVARCHAR(MAX)", 
+          "_id": "VARCHAR(40)" 
+        }

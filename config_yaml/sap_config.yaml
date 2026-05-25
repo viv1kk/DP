@@ -1,0 +1,129 @@
+pipelines:
+  SAP_SOLMAN:
+    api:
+      base_url: "https://solman-prd.emea.sap.nexperia.com/sap/opu/odata/sap/AI_SYSMON_OVERVIEW_SRV/"
+      sap_client: "sap-client=400"
+      header: | 
+        {"X-CSRF-Token": "Fetch"}
+      method: GET
+      retry_count: 3
+      max_workers: 400
+      timeout: 30
+
+    api_credentials:
+      username: ${SAP_SOLMAN_USERNAME}
+      password: ${SAP_SOLMAN_PASSWORD}
+
+    url_poll_table_name: "Phoenix_Landscape_URLs_V1_POLL"
+      
+    destination:
+      sql_table_name: "SAP_SYSMON_LIVE"
+      sql_pk: ["MoContextid", "TypeId", "EventName", "RootComponentid"]
+      sql_pk_constraint_name: "PK_SAP_SYSMON_LIVE"
+      sql_columnar_index_name: "ncci_SAP_SYSMON_LIVE"
+      sql_columns: |
+        {
+          "MoContextid": "NVARCHAR(64)",
+          "MoType": "NVARCHAR(100)",
+          "ParentTypeId": "NVARCHAR(100)",
+          "TypeId": "NVARCHAR(100)",
+          "MaiMetricPath": "NVARCHAR(1000)",
+          "MoName": "NVARCHAR(255)",
+          "HashMetricPath": "NVARCHAR(1000)",
+          "ObjectType": "NVARCHAR(100)",
+          "Category": "NVARCHAR(100)",
+          "IsCategory": "NVARCHAR(64)",
+          "RuleClass": "NVARCHAR(100)",
+          "Rating": "INT",
+          "IsPropagated": "BIT",
+          "ValueCount": "INT",
+          "ValueMax": "FLOAT",
+          "ValueMin": "FLOAT",
+          "ValueSum": "FLOAT",
+          "ValueTimestamp": "NVARCHAR(100)",
+          "ValueText": "VARCHAR(2000)",
+          "ValueLast": "FLOAT",
+          "ValueTimestampMeasurement": "NVARCHAR(100)",
+          "Greentoyellow": "FLOAT",
+          "Yellowtogreen": "FLOAT",
+          "Yellowtored": "FLOAT",
+          "Redtoyellow": "FLOAT",
+          "EventName": "NVARCHAR(512)",
+          "Direction": "NVARCHAR(100)",
+          "Watermark": "NVARCHAR(100)",
+          "Unit": "NVARCHAR(100)",
+          "Period": "BIGINT",
+          "PeriodUnit": "NVARCHAR(100)",
+          "MetricDatatype": "NVARCHAR(100)",
+          "RuleType": "NVARCHAR(100)",
+          "TextThreshold": "NVARCHAR(255)",
+          "Threshold": "FLOAT",
+          "CalcTimeFrame": "NVARCHAR(100)",
+          "Greentored": "FLOAT",
+          "IsReportAvail": "NVARCHAR(8)",
+          "ParsedValueTimestamp_UTC": "DATETIME2(0)",
+          "ParsedValueTimestamp_CET": "DATETIME2(0)",
+          "ParsedValueTimestamp_IST": "DATETIME2(0)",
+          "RootComponentid": "NVARCHAR(255)",
+          "RootComponentName": "NVARCHAR(255)",
+          "Availstatus": "INT",
+          "Perfstatus": "INT",
+          "Excpstatus": "INT",
+          "Confstatus": "INT",
+          "Selfmonstatus": "INT",
+          "NoOfAlerts": "INT",
+          "MaxStatus": "INT",
+          "SID" : "VARCHAR(32)",
+          "Priority" : "VARCHAR(4)",
+          "latest_poll_timestamp": "DATETIME2(0)",
+          "URL_Poll_Result" : "BIT",
+          "Solution" : "VARCHAR(32)"
+        }
+  SAP_URL_MONITORING:
+    url_file_name: "SAP_URLs_V1.csv"
+    url_file_encoding: "latin1"
+
+    base_table:
+      sql_table_name: "Phoenix_Landscape_URLs_V1"
+      sql_pk: ""
+      sql_pk_constraint_name: ""
+      sql_columnar_index_name: ""
+      sql_columns: |
+        {
+          "Solution": "VARCHAR(128)",
+          "Environment": "VARCHAR(128)",
+          "SID": "VARCHAR(128)",
+          "Location": "VARCHAR(128)",
+          "Hostname": "VARCHAR(128)",
+          "Application Category": "VARCHAR(128)",
+          "Application stack": "VARCHAR(128)",
+          "link to Fiori Launchpad": "VARCHAR(128)",
+          "Central Web Dispatcher": "VARCHAR(128)",
+          "DB Type": "VARCHAR(128)",
+          "Cluster": "VARCHAR(128)",
+          "OS  Type": "VARCHAR(128)",
+          "OS version": "VARCHAR(128)"
+        }
+      
+    poll_table:
+      sql_table_name: "Phoenix_Landscape_URLs_V1_POLL"
+      sql_pk: ""
+      sql_pk_constraint_name: ""
+      sql_columnar_index_name: ""
+      sql_columns: |
+        {
+          "Solution": "VARCHAR(128)",
+          "Environment": "VARCHAR(128)",
+          "SID": "VARCHAR(128)",
+          "Location": "VARCHAR(128)",
+          "Hostname": "VARCHAR(128)",
+          "Application Category": "VARCHAR(128)",
+          "Application stack": "VARCHAR(128)",
+          "link to Fiori Launchpad": "VARCHAR(128)",
+          "Central Web Dispatcher": "VARCHAR(128)",
+          "DB Type": "VARCHAR(128)",
+          "Cluster": "VARCHAR(128)",
+          "OS  Type": "VARCHAR(128)",
+          "OS version": "VARCHAR(128)",
+          "Poll Result": "BIT"
+        }

@@ -1,0 +1,60 @@
+pipelines:
+  SNOW_OPEN_INCIDENTS:
+    api:
+      base_url: "https://nexperia.service-now.com/api/now/table/incident"
+      method: GET
+      header: | 
+        {"Accept": "application/json"}
+      payload: |
+        {
+          "url_param": "sysparm_query=stateNOT IN6,7,8^stateISNOTEMPTY",
+          "columns":  ["sys_id","number","caller_id","cmdb_ci","short_description","description","state","incident_state","priority","impact","urgency","assignment_group","assigned_to","opened_at","resolved_at","closed_at","close_code","close_notes","reassignment_count", "reopen_count","sys_created_on","sys_updated_on","sys_updated_by","category","subcategory","business_service","made_sla", "contact_type"]
+        }
+      retry_count: 3
+      page_limit: 5000
+      timeout: 30
+
+    api_credentials:
+      username: ${SERVICENOW_USERNAME}
+      password: ${SERVICENOW_PASSWORD}
+      
+    destination:
+      sql_table_name: "SERVICENOW_PROD"
+      sql_pk: ["sys_id"]
+      sql_pk_constraint_name: "PK_SERVICENOW_PROD"
+      sql_columnar_index_name: "NCCI_SERVICENOW_PROD"
+      sql_columns: |
+        {
+          "short_description": "NVARCHAR(255)",
+          "close_code": "NVARCHAR(50)",
+          "made_sla": "VARCHAR(8)",
+          "assignment_group": "NVARCHAR(100)",
+          "cmdb_ci": "VARCHAR(50)",
+          "description": "NVARCHAR(MAX)",
+          "sys_updated_on": "DATETIME2(0)",
+          "close_notes": "NVARCHAR(MAX)",
+          "sys_id": "CHAR(32)",
+          "number": "VARCHAR(20)",
+          "sys_updated_by": "NVARCHAR(32)",
+          "incident_state": "VARCHAR(20)",
+          "urgency": "NVARCHAR(20)",
+          "sys_created_on": "DATETIME2(0)",
+          "state": "NVARCHAR(20)",
+          "reassignment_count": "INT",
+          "assigned_to": "NVARCHAR(50)",
+          "closed_at": "DATETIME2(0)",
+          "impact": "NVARCHAR(20)",
+          "business_service": "NVARCHAR(128)",
+          "reopen_count": "INT",
+          "priority": "NVARCHAR(20)",
+          "opened_at": "DATETIME2(0)",
+          "caller_id": "NVARCHAR(64)",
+          "resolved_at": "DATETIME2(0)",
+          "category": "NVARCHAR(20)",
+          "subcategory": "NVARCHAR(10)",
+          "server_name": "VARCHAR(50)",
+          "utilization %": "FLOAT",
+          "monitoring_dimension": "VARCHAR(64)",
+          "contact_type": "VARCHAR(64)",
+          "latest_poll_timestamp": "DATETIME2(0)"
+        }
