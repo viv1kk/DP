@@ -232,7 +232,7 @@ pipelines:
                 },
                 {
                   "prefix": {
-                    "emscheck.queuename.keyword": "$TMP$"
+                    "emscheck.queuename.keyword": "$$TMP$$"
                   }
                 }
               ]
