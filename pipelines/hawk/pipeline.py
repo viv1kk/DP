@@ -7,23 +7,29 @@ from config.sql_tbl_config import TableConfig
 from connectors.mssql_connector import MSSQL_Connector
 from framework.base_pipeline import BasePipeline
 from framework.logger import get_logger
+from framework.paths import DATA_DIR
+from framework.util import load_excel_to_df
 from framework.validation import validate_columns
 from framework.mssql_table_reset import MSSQL_TABLE_MANAGER
-from framework.decorators import pipeline_run_status
+from framework.decorators import pipeline_run_status, singleton_init_once
 from exceptions.RecoverableError import RecoverableError
 from .extract import extract_data
 from .transform import transform
 from .load import load_data
 
-
+@singleton_init_once
 class HAWK_APPLICATION_MONITORING(BasePipeline):
+    _cache = {}
     def __init__(self):
+
         self.pipeline_name = "HAWK_APPLICATION_MONITORING"
-        
-        self.sap_config = HAWK_CONFIG(file="hawk_config.yaml", 
+        self.hawk_config = HAWK_CONFIG(file="hawk_config.yaml", 
                             pipeline_name=self.pipeline_name)
         self.mssql_config = MSSQL_Config()
         self.logger = get_logger(self.pipeline_name)
+        self._build_cache()
+        
+        
 
 
         # self.tbl_config = TableConfig(
@@ -33,6 +39,22 @@ class HAWK_APPLICATION_MONITORING(BasePipeline):
         #     sql_columnar_index_name = self.sap_config.sql_columnar_index_name, 
         #     sql_columns = self.sap_config.sql_columns,
         # )
+
+    """
+    GET THE DEFAULT DATA FROM EXCEL EXTRACT.
+    ALSO CHECK DB TABLE IF IT HAVE ANY EXISTING DATA.
+    MERGE THEM AND BUILD THE CACHE.
+    """
+    def _build_cache(self):
+        HAWK_APPLICATION_MONITORING._cache = dict()
+        path = f"{DATA_DIR}/hawk/TIBCO HAWK APPLICATIONS FORMATTED.xlsx"
+        df = load_excel_to_df(path)
+        
+        # TODO: ADD DB CHECK
+
+        HAWK_APPLICATION_MONITORING._cache["last_microagent_data"] = df
+
+
 
     @pipeline_run_status()
     def etl(self):
@@ -58,14 +80,13 @@ class HAWK_APPLICATION_MONITORING(BasePipeline):
 
     def extract(self)->dict:
         self.logger.info("Extracting data")
-        data = extract_data(hawk_config=self.sap_config, logger=self.logger)
+        data = extract_data(hawk_config=self.hawk_config, logger=self.logger)
         return data
 
     def transform(self, data:dict)->pd.DataFrame:
         self.logger.info("Transforming data")
-        url_poll_tbl_config= TableConfig(sql_table_name=self.sap_config.url_poll_table_name)
 
-        df = transform(data=data, url_poll_tbl_config=url_poll_tbl_config, db=self.mssql_config)
+        df = transform(data=data)
         return df
 
 

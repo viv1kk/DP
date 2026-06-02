@@ -147,10 +147,10 @@ class HAWK_CONNECTOR:
 
 
     def _get_microagent_status(self, param):
-        url = f"{self.base_url}/{param["domain"]}/{param["dns"]}/{param["host_name"]}/invoke"
+        path = f"/{param["domain"]}/{param["dns"]}/{param["host_name"]}/invoke"
         payload = param.get("payload")
         try:
-            return self._post(url, payload)
+            return self._fetch(path=path, payload=payload, method="POST")
         except Exception as e:
             return {}
 

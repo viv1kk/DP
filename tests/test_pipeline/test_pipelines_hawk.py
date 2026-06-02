@@ -14,8 +14,10 @@ from pipelines.hawk.pipeline import HAWK_APPLICATION_MONITORING
 
 def test_pipeline_extract():
     obj = HAWK_APPLICATION_MONITORING()
-    data = obj.extract()
+    e = obj.extract()
+    t = obj.transform(e)
 
-    print(data.keys())
+    print(t.head(100))
+    
 
 

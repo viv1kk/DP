@@ -324,7 +324,7 @@ def hawk_http_exception_handler(retries=1, delay=2):
                 try:
                     return func(self, *args, **kwargs)
                 except requests.exceptions.ConnectionError:
-                    self.logger.error(f"Zabbix unreachable (attempt {attempt})")
+                    self.logger.error(f"HAWK unreachable (attempt {attempt})")
 
                 except requests.exceptions.Timeout:
                     self.logger.error(f"Request timeout (attempt {attempt})")
