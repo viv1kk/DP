@@ -1,0 +1,34 @@
+pipelines:
+  HAWK_APPLICATION_MONITORING:
+    api:
+      base_url: "http://172.16.24.99:8083/HawkConsole"
+      method: GET
+      header: | 
+        {"Content-Type": "application/json"}
+      retry_count: 3
+      max_workers: 400
+      timeout: 30
+
+    api_credentials:
+      username: ${HAWK_CONSOLE_USERNAME}
+      password: ${HAWK_CONSOLE_PASSWORD}
+      
+    destination:
+      sql_table_name: "TIBCO_ADMIN_APPLICATION_MONITORING"
+      sql_pk: []
+      sql_pk_constraint_name: "PK_TIBCO_ADMIN_APPLICATION_MONITORING"
+      sql_columnar_index_name: ""
+      sql_columns: |
+        {
+          "dns": "VARCHAR(32)",
+          "domain": "VARCHAR(32)",
+          "host_name": "VARCHAR(32)",
+          "host_status": "VARCHAR(32)",
+          "type": "VARCHAR(32)",
+          "deployment": "VARCHAR(128)",
+          "component": "VARCHAR(128)",
+          "microagent_name": "VARCHAR(255)",
+          "status": "VARCHAR(32)",
+          "last_poll_at_IST": "DATETIME2(0)",
+          "application_tracked": "VARCHAR(32)"
+        }

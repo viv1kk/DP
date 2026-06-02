@@ -315,6 +315,40 @@ def zabbix_http_exception_handler(retries=1, delay=2):
     return decorator
 
 
+def hawk_http_exception_handler(retries=1, delay=2):
+    def decorator(func):
+        @wraps(func)
+        def wrapper(self, *args, **kwargs):
+            
+            for attempt in range(1, retries + 1):
+                try:
+                    return func(self, *args, **kwargs)
+                except requests.exceptions.ConnectionError:
+                    self.logger.error(f"Zabbix unreachable (attempt {attempt})")
+
+                except requests.exceptions.Timeout:
+                    self.logger.error(f"Request timeout (attempt {attempt})")
+
+                except requests.exceptions.HTTPError as e:
+                    status = e.response.status_code
+                    self.logger.error(f"HTTP error {status}")
+
+                    if status < 500:
+                        break
+
+                except requests.exceptions.RequestException as e:
+                    self.logger.error(f"Request error: {e}")
+                    break
+                
+                except Exception as e:
+                    self.logger.error(f"Unexpected error: {e}")
+                    break
+                time.sleep(delay)
+
+            raise RecoverableError("All attempts failed to get data!")
+        return wrapper
+    return decorator
+
 import threading
 from functools import wraps
 

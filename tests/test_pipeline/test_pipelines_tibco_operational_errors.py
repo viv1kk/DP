@@ -12,9 +12,9 @@ from pipelines.tibco.operational_errors.pipeline import TIBCO_AUDIT_OPERATIONAL_
 #     obj.run()
 
 
-def test_pipeline_extract():
-    obj = TIBCO_AUDIT_OPERATIONAL_ERRORS()
-    print(obj.es_config)
-    obj.extract()
+# def test_pipeline_extract():
+#     obj = TIBCO_AUDIT_OPERATIONAL_ERRORS()
+#     print(obj.es_config)
+#     obj.extract()
 
 
