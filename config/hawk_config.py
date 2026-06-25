@@ -17,11 +17,8 @@ class HAWK_CONFIG:
         self.password = pipe_conf["api_credentials"]["password"]
 
         # SQL SPECIFIC
-        self.sql_table_name = pipe_conf["destination"]["sql_table_name"]
-        self.sql_pk = pipe_conf["destination"]["sql_pk"]
-        self.sql_pk_constraint_name = pipe_conf["destination"]["sql_pk_constraint_name"]
-        self.sql_columnar_index_name = pipe_conf["destination"]["sql_columnar_index_name"]
-        self.sql_columns = json.loads(pipe_conf["destination"]["sql_columns"])
+        self.host_status_table = pipe_conf["host_status_table"]
+        self.application_status_table = pipe_conf["application_status_table"]
 
     def __repr__(self):
         return f"{self.__class__.__name__}({self.__dict__})"

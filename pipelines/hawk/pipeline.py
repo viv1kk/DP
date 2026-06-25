@@ -1,5 +1,6 @@
 import pandas as pd
 import logging
+import json
 
 from config.hawk_config import HAWK_CONFIG
 from config.mssql_config import MSSQL_Config
@@ -29,16 +30,22 @@ class HAWK_APPLICATION_MONITORING(BasePipeline):
         self.logger = get_logger(self.pipeline_name)
         self._build_cache()
         
-        
-
-
-        # self.tbl_config = TableConfig(
-        #     sql_table_name = self.sap_config.sql_table_name,
-        #     sql_pk = self.sap_config.sql_pk,
-        #     sql_pk_constraint_name = self.sap_config.sql_pk_constraint_name,
-        #     sql_columnar_index_name = self.sap_config.sql_columnar_index_name, 
-        #     sql_columns = self.sap_config.sql_columns,
-        # )
+        self.tbls_config = {
+            "application_status_table": TableConfig(
+                sql_table_name = self.hawk_config.application_status_table['sql_table_name'],
+                sql_pk = self.hawk_config.application_status_table['sql_pk'],
+                sql_pk_constraint_name = self.hawk_config.application_status_table['sql_pk_constraint_name'],
+                sql_columnar_index_name = self.hawk_config.application_status_table['sql_columnar_index_name'], 
+                sql_columns = json.loads(self.hawk_config.application_status_table['sql_columns']),
+            ),
+            "host_status_table": TableConfig(
+                sql_table_name = self.hawk_config.host_status_table['sql_table_name'],
+                sql_pk = self.hawk_config.host_status_table['sql_pk'],
+                sql_pk_constraint_name = self.hawk_config.host_status_table['sql_pk_constraint_name'],
+                sql_columnar_index_name = self.hawk_config.host_status_table['sql_columnar_index_name'], 
+                sql_columns = json.loads(self.hawk_config.host_status_table['sql_columns']),
+            )
+        }
 
     """
     GET THE DEFAULT DATA FROM EXCEL EXTRACT.
@@ -54,16 +61,13 @@ class HAWK_APPLICATION_MONITORING(BasePipeline):
 
         HAWK_APPLICATION_MONITORING._cache["last_microagent_data"] = df
 
-
-
     @pipeline_run_status()
     def etl(self):
         self.data = self.extract()
-        self.df = self.transform(data=self.data)
-        self.validate(df=self.df)
-        self.load(df=self.df)
+        self.transform_data = self.transform(data=self.data)
+        self.validate(data=self.transform_data)
+        self.load(data=self.transform_data)
                 
-
     def run(self):
         x = 1
         while(x > 0):
@@ -76,30 +80,45 @@ class HAWK_APPLICATION_MONITORING(BasePipeline):
             
             except Exception as e:
                 break
-
+            
+            else:
+                data = self.transform_data["raw_df"]
+                data.drop(columns=["host_status", "status", "last_poll_at_IST", "microagent_name"], inplace=True, errors="ignore")
+                data.drop_duplicates(inplace=True)
+                HAWK_APPLICATION_MONITORING._cache["last_microagent_data"] = data
 
     def extract(self)->dict:
         self.logger.info("Extracting data")
         data = extract_data(hawk_config=self.hawk_config, logger=self.logger)
         return data
 
-    def transform(self, data:dict)->pd.DataFrame:
+    def transform(self, data:dict)->dict:
         self.logger.info("Transforming data")
-
         df = transform(data=data)
+        
         return df
 
 
-    def validate(self, df:pd.DataFrame):
+    def validate(self, data:dict[str : pd.DataFrame]):
         # validating whether all the columns are present in both the db and the dataframe.
         try:
             self.logger.info("Validating data")
             sql = MSSQL_Connector(db=self.mssql_config)
-            df_cols = df.columns
-            db_cols = sql.get_columns(table=self.tbl_config)
+            
+            application_status_table_df_cols = data['microagent_status_df'].columns
+            application_status_table_db_cols = sql.get_columns(table=self.tbls_config['application_status_table'])
 
             # Give me all columns that exist in the DataFrame but do not exist in the SQL table.
-            missing = set(db_cols) - set(df_cols)
+            missing = set(application_status_table_db_cols) - set(application_status_table_df_cols)
+
+            if missing:
+                raise ValueError(f"Missing required columns: {missing}")
+            
+            host_status_table_df_cols = data['host_status_df'].columns
+            host_status_table_db_cols = sql.get_columns(table=self.tbls_config['host_status_table'])
+
+            # Give me all columns that exist in the DataFrame but do not exist in the SQL table.
+            missing = set(host_status_table_db_cols) - set(host_status_table_df_cols)
 
             if missing:
                 raise ValueError(f"Missing required columns: {missing}")
@@ -109,22 +128,26 @@ class HAWK_APPLICATION_MONITORING(BasePipeline):
             raise RecoverableError(e)
 
 
-    def load(self, df:pd.DataFrame):
+    def load(self, data:dict[str:pd.DataFrame]):
         db = self.mssql_config
-        table = self.tbl_config
+        table = self.tbls_config
         logger = self.logger
 
         self.logger.info("Loading data")
 
-        load_data(df=df, db=db, table=table, logger=logger)
+        load_data(data=data, db=db, table=table, logger=logger)
         # table = self.config.get("destination")["table"]
         # self.logger.info("Loading data")
         # load_data(df, self.db, table)
 
 
     def reset_mssql_table(self):
-        tbl_config = self.tbl_config
+        application_status_table_config = self.tbls_config['application_status_table']
+        host_status_table_config = self.tbls_config['host_status_table']
         # columnar index columns are calculated automatically
 
-        mssql = MSSQL_TABLE_MANAGER(tbl_config=tbl_config)
-        mssql.recreate()
+        tbls = [application_status_table_config, host_status_table_config]
+
+        for tbl in tbls:
+            mssql = MSSQL_TABLE_MANAGER(tbl_config=tbl)
+            mssql.recreate()

@@ -1,0 +1,26 @@
+*****************************************************
+CREATE VIEW FOR TIBCO_ADMIN_APPLICATION_MONITORING
+*****************************************************
+
+
+CREATE VIEW dbo.VW_TIBCO_ADMIN_APPLICATION_MONITORING AS
+SELECT
+    a.dns,
+    a.domain,
+    a.host_name,
+    h.host_status,
+    h.host_tracked,
+    a.type,
+    a.deployment,
+    a.component,
+    a.microagent_name,
+    a.status AS application_status,
+    a.application_tracked,
+    a.last_poll_at_IST AS application_last_poll_at_IST,
+    h.last_poll_at_IST AS host_last_poll_at_IST
+FROM dbo.TIBCO_ADMIN_APPLICATION_MONITORING AS a
+LEFT JOIN dbo.TIBCO_ADMIN_APPLICATION_MONITORING_HOSTS AS h
+    ON a.dns = h.dns
+    AND a.domain = h.domain
+    AND a.host_name = h.host_name;
+GO

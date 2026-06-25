@@ -313,26 +313,28 @@ class HAWK_CONNECTOR:
                 "domain": domain
             })
     
-            if not m_agent_payload:
-                return None
-    
-            param = {
-                "dns": dns,
-                "domain": domain,
-                "host_name": host_name,
-                "payload": m_agent_payload
-            }
-    
-            status = self._get_microagent_status(param)
-    
-            status_val = next(
-                (
-                    st.get("value")
-                    for st in status.get("data", {}).get("dataElements", [])
-                    if st.get("name") == "State"
-                ),
-                None
-            )
+            status_val = ''
+
+            if m_agent_payload:
+                # return None
+
+                param = {
+                    "dns": dns,
+                    "domain": domain,
+                    "host_name": host_name,
+                    "payload": m_agent_payload
+                }
+        
+                status = self._get_microagent_status(param)
+
+                status_val = next(
+                    (
+                        st.get("value")
+                        for st in status.get("data", {}).get("dataElements", [])
+                        if st.get("name") == "State"
+                    ),
+                    None
+                )
     
             row = {
                 "dns": dns,

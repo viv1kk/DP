@@ -13,9 +13,9 @@ pipelines:
       username: ${HAWK_CONSOLE_USERNAME}
       password: ${HAWK_CONSOLE_PASSWORD}
       
-    destination:
+    application_status_table:
       sql_table_name: "TIBCO_ADMIN_APPLICATION_MONITORING"
-      sql_pk: []
+      sql_pk: ["dns", "domain", "host_name", "deployment", "component", "microagent_name"]
       sql_pk_constraint_name: "PK_TIBCO_ADMIN_APPLICATION_MONITORING"
       sql_columnar_index_name: ""
       sql_columns: |
@@ -23,7 +23,6 @@ pipelines:
           "dns": "VARCHAR(32)",
           "domain": "VARCHAR(32)",
           "host_name": "VARCHAR(32)",
-          "host_status": "VARCHAR(32)",
           "type": "VARCHAR(32)",
           "deployment": "VARCHAR(128)",
           "component": "VARCHAR(128)",
@@ -31,4 +30,19 @@ pipelines:
           "status": "VARCHAR(32)",
           "last_poll_at_IST": "DATETIME2(0)",
           "application_tracked": "VARCHAR(32)"
+        }
+        
+    host_status_table: 
+      sql_table_name: "TIBCO_ADMIN_APPLICATION_MONITORING_HOSTS"
+      sql_pk: ["dns", "domain", "host_name"]
+      sql_pk_constraint_name: "PK_TIBCO_ADMIN_APPLICATION_MONITORING_HOSTS"
+      sql_columnar_index_name: ""
+      sql_columns: |
+        {
+          "dns": "VARCHAR(32)",
+          "domain": "VARCHAR(32)",
+          "host_name": "VARCHAR(32)",
+          "host_status": "VARCHAR(32)",
+          "last_poll_at_IST": "DATETIME2(0)",
+          "host_tracked": "VARCHAR(32)"
         }
