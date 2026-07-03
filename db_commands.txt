@@ -2,25 +2,57 @@
 CREATE VIEW FOR TIBCO_ADMIN_APPLICATION_MONITORING
 *****************************************************
 
-
-CREATE VIEW dbo.VW_TIBCO_ADMIN_APPLICATION_MONITORING AS
+ALTER VIEW dbo.vw_TIBCO_ADMIN_APPLICATION_MONITORING
+AS
+WITH RankedApplications AS
+(
+    SELECT
+        a.dns,
+        a.domain,
+        a.host_name,
+        h.host_status,
+        h.host_tracked,
+        a.type,
+        a.deployment,
+        a.component,
+		a.microagent_name,
+        a.status AS application_status,
+		a.prev_status AS prev_application_status,
+        a.application_tracked,
+        a.last_poll_at_IST AS application_last_poll_at_IST,
+        h.last_poll_at_IST AS host_last_poll_at_IST,
+        ROW_NUMBER() OVER
+        (
+            PARTITION BY
+                a.dns,
+                a.domain,
+                a.host_name,
+                a.deployment,
+                a.component
+            ORDER BY a.last_poll_at_IST DESC
+        ) AS rn
+    FROM dbo.TIBCO_ADMIN_APPLICATION_MONITORING AS a
+    LEFT JOIN dbo.TIBCO_ADMIN_APPLICATION_MONITORING_HOSTS AS h
+        ON a.dns = h.dns
+        AND a.domain = h.domain
+        AND a.host_name = h.host_name
+    WHERE a.application_tracked <> 'No'
+)
 SELECT
-    a.dns,
-    a.domain,
-    a.host_name,
-    h.host_status,
-    h.host_tracked,
-    a.type,
-    a.deployment,
-    a.component,
-    a.microagent_name,
-    a.status AS application_status,
-    a.application_tracked,
-    a.last_poll_at_IST AS application_last_poll_at_IST,
-    h.last_poll_at_IST AS host_last_poll_at_IST
-FROM dbo.TIBCO_ADMIN_APPLICATION_MONITORING AS a
-LEFT JOIN dbo.TIBCO_ADMIN_APPLICATION_MONITORING_HOSTS AS h
-    ON a.dns = h.dns
-    AND a.domain = h.domain
-    AND a.host_name = h.host_name;
+    dns,
+    domain,
+    host_name,
+    host_status,
+    host_tracked,
+    type,
+    deployment,
+    component,
+	microagent_name,
+    application_status,
+	prev_application_status,
+    application_tracked,
+    application_last_poll_at_IST,
+    host_last_poll_at_IST
+FROM RankedApplications
+WHERE rn = 1;
 GO

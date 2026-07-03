@@ -20,7 +20,7 @@ def _add_status_to_microagents(microagent_list, m_status):
 
         df = df.drop(columns=["microagent_name_status"])
 
-        df["status"] = df["status"].fillna("").replace("", "UNKNOWN")
+        df["status"] = df["status"].fillna("").replace("", "STOPPED_INFERRED")
         
         # Adding timstamp to keep track of the poll time.
         now_ist = int(time.time())
@@ -40,59 +40,64 @@ def _add_status_to_microagents(microagent_list, m_status):
         return df
         
     except Exception as e:
-        RecoverableError(f"{e}")
-    return pd.DataFrame()
+        return pd.DataFrame()
 
 def create_host_status_df(df:pd.DataFrame)->pd.DataFrame:
-    app_cache_df = hawk.HAWK_APPLICATION_MONITORING._cache["last_microagent_data"].copy()
+    try:
+        app_cache_df = hawk.HAWK_APPLICATION_MONITORING._cache["last_microagent_data"].copy()
 
-    host_df_fields = ["dns", "domain", "host_name", "host_status", "host_tracked", "last_poll_at_IST"]
+        host_df_fields = ["dns", "domain", "host_name", "host_status", "host_tracked", "last_poll_at_IST"]
 
-    host_df = df[[field for field in host_df_fields if field not in ["host_tracked"]]]
-    
-    host_df_latest = (
-        host_df
-        .sort_values("last_poll_at_IST")
-        .drop_duplicates(
-            subset=["dns", "domain", "host_name"],
-            keep="last"
+        host_df = df[[field for field in host_df_fields if field not in ["host_tracked"]]]
+        
+        host_df_latest = (
+            host_df
+            .sort_values("last_poll_at_IST")
+            .drop_duplicates(
+                subset=["dns", "domain", "host_name"],
+                keep="last"
+            )
+            .reset_index(drop=True)
         )
-        .reset_index(drop=True)
-    )
-    
-    host_df_latest["host_tracked"] = np.where(
-        host_df_latest["host_status"] != "UNKNOWN",
-        "Yes",
-        "No"
-    )
-
-    app_cache_df_host = (
-        app_cache_df[["dns", "domain", "host_name"]]
-        .drop_duplicates(
-            subset=["dns", "domain", "host_name"],
-            keep="last"
+        
+        host_df_latest["host_tracked"] = np.where(
+            host_df_latest["host_status"] != "UNKNOWN",
+            "Yes",
+            "No"
         )
-        .reset_index(drop=True)
-    )
 
-    host_df = host_df_latest.merge(
-        app_cache_df_host,
-        on=["dns", "domain", "host_name"],
-        how="left",
-        suffixes=("", "_status")
-    )
+        app_cache_df_host = (
+            app_cache_df[["dns", "domain", "host_name"]]
+            .drop_duplicates(
+                subset=["dns", "domain", "host_name"],
+                keep="last"
+            )
+            .reset_index(drop=True)
+        )
 
-    return host_df
+        host_df = host_df_latest.merge(
+            app_cache_df_host,
+            on=["dns", "domain", "host_name"],
+            how="left",
+            suffixes=("", "_status")
+        )
 
+        return host_df
+    except:
+        return pd.DataFrame(columns=host_df_fields)
 
 def create_microagent_status_df(df:pd.DataFrame)->pd.DataFrame:
-    m_df_fields = ["dns", "domain", "host_name", "type", 
-                   "deployment", "component", "microagent_name", 
-                   "status", "application_tracked", "last_poll_at_IST"]
-    
-    m_df = df[m_df_fields]
-    m_df.drop_duplicates(inplace=True)
-    return m_df
+    try:
+        df["prev_status"] = ""
+        m_df_fields = ["dns", "domain", "host_name", "type", 
+                    "deployment", "component", "microagent_name", 
+                    "status", "application_tracked", "last_poll_at_IST", "prev_status"]
+        
+        m_df = df[m_df_fields]
+        m_df.drop_duplicates(inplace=True)
+        return m_df
+    except:
+        return pd.DataFrame(columns=m_df_fields)
 
 def transform(data:dict)->dict:
     try:
@@ -111,5 +116,5 @@ def transform(data:dict)->dict:
         }
         
     except Exception as e:
-        raise RecoverableError(f"Recoverable Error: {e}")
+        raise RecoverableError(f"Error : {e}")
     

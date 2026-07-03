@@ -28,6 +28,7 @@ pipelines:
           "component": "VARCHAR(128)",
           "microagent_name": "VARCHAR(255)",
           "status": "VARCHAR(32)",
+          "prev_status": "VARCHAR(32)",
           "last_poll_at_IST": "DATETIME2(0)",
           "application_tracked": "VARCHAR(32)"
         }

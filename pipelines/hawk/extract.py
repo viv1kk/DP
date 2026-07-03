@@ -9,42 +9,99 @@ import logging
 import re
 import pipelines.hawk.pipeline as hawk
 
+# def _identify_microagent_type(param):
+#     PATTERN = re.compile(
+#         r"^COM\.TIBCO\.ADAPTER\."
+#         r"(?P<type>[A-Za-z0-9_-]+)\."
+#         r"(?P<domain>[A-Za-z0-9_-]+)\."
+#         r"(?P<deployment>[A-Za-z0-9_-]+(?::[0-9]+)?)\."
+#         r"(?P<component>[A-Za-z0-9_-]+)(?::(?P<number>[0-9]+))?$"
+#     )
+
+#     def parse_adapter_string(s: str):
+#         match = PATTERN.match(s)
+#         return match.groupdict() if match else None
+
+#     name = param.get("microagent_name", "")
+#     domain = param.get("domain", "")
+
+#     if not name:
+#         return None
+
+#     match = parse_adapter_string(name)
+#     if not match:
+#         return None
+
+#     if domain != match.get("domain", ""):
+#         return None
+#     match.pop("number", None)
+#     return match
+
+
+import re
+
+
+import re
+
+
 def _identify_microagent_type(param):
-    PATTERN = re.compile(
+    pattern_with_domain = re.compile(
         r"^COM\.TIBCO\.ADAPTER\."
         r"(?P<type>[A-Za-z0-9_-]+)\."
         r"(?P<domain>[A-Za-z0-9_-]+)\."
         r"(?P<deployment>[A-Za-z0-9_-]+(?::[0-9]+)?)\."
-        r"(?P<component>[A-Za-z0-9_-]+)(?::(?P<number>[0-9]+))?$"
+        r"(?P<component>[A-Za-z0-9_-]+)"
+        r"(?::(?P<number>[0-9]+))?$"
     )
 
-    def parse_adapter_string(s: str):
-        match = PATTERN.match(s)
-        return match.groupdict() if match else None
+    pattern_without_domain = re.compile(
+        r"^COM\.TIBCO\.ADAPTER\."
+        r"(?P<type>[A-Za-z0-9_-]+)\."
+        r"(?P<deployment>[A-Za-z0-9_-]+(?::[0-9]+)?)\."
+        r"(?P<component>[A-Za-z0-9_-]+)"
+        r"(?::(?P<number>[0-9]+))?$"
+    )
 
     name = param.get("microagent_name", "")
-    domain = param.get("domain", "")
+    expected_domain = param.get("domain", "")
 
     if not name:
         return None
 
-    match = parse_adapter_string(name)
-    if not match:
-        return None
+    match = pattern_with_domain.match(name)
 
-    if domain != match.get("domain", ""):
-        return None
-    match.pop("number", None)
-    return match
+    if match:
+        result = match.groupdict()
 
-def enrich_microagents(microagent_list):
-    for item in microagent_list:
-        result = _identify_microagent_type(item)
+        if result["domain"] != expected_domain and result["domain"] != "":
+            result.pop("domain", None)
 
-        if isinstance(result, dict):
-            item.update(result)   # 🔥 This merges new keys into same dict
+    else:
+        match = pattern_without_domain.match(name)
 
-    return microagent_list
+        if not match:
+            return None
+
+        result = match.groupdict()
+
+    result.pop("number", None)
+
+    return result
+
+def enrich_microagents(microagent_list, logger: logging.Logger):
+    try:
+        for item in microagent_list:
+            result = _identify_microagent_type(item)
+
+            if isinstance(result, dict):
+                item.update(result)   # 🔥 This merges new keys into same dict
+
+        return microagent_list
+
+    except Exception as e:
+        logger.error(f"Error: {e}")
+        return []
+
 
 def merge_microagent_with_cache(microagent_df, app_cache_df):
         """
@@ -113,7 +170,7 @@ def extract_data(hawk_config: HAWK_CONFIG, logger: logging.Logger):
         domains_list = conn.get_all_domains()
         agent_list = conn.get_all_agents(domains_list)        
         microagent_list = conn.get_all_microagents(agent_list)
-        microagent_list = enrich_microagents(microagent_list)
+        microagent_list = enrich_microagents(microagent_list, logger)
 
         microagent_df = pd.DataFrame(microagent_list)
         app_cache_df = hawk.HAWK_APPLICATION_MONITORING._cache["last_microagent_data"]
@@ -130,7 +187,12 @@ def extract_data(hawk_config: HAWK_CONFIG, logger: logging.Logger):
         
     except RecoverableError as e:
         logger.warning(f"Recoverable error: {e}")
-        raise
+        return {
+            "domains_list" : [],
+            "agent_list" : [],
+            "microagent_list" : pd.DataFrame(),
+            "microagent_status" : []
+        }
 
     except Exception as e:
         logger.error(f"Unexpected error: {e}")

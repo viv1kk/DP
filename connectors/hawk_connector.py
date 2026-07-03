@@ -68,7 +68,7 @@ class HAWK_CONNECTOR:
             ret = [item.get("name") for item in resp if item.get("name", "") != ""]
             return ret
         except Exception as e:
-            RecoverableError(f"Error while fetching all domains. {e}")
+            raise RecoverableError(f"Error while fetching all domains. {e}")
         
 
     def _get_hosts_data(self, param):
@@ -76,7 +76,7 @@ class HAWK_CONNECTOR:
         try:
             return self._fetch(path)
         except Exception as e:
-            RecoverableError(f"Error while fetching host data. {e}")
+            raise RecoverableError(f"Error while fetching host data. {e}")
 
 
     def get_all_agents(self, domains):
@@ -98,7 +98,7 @@ class HAWK_CONNECTOR:
             return data
     
         except Exception as e:
-            RecoverableError(f"Error in _get_all_agents: {e}")
+            raise RecoverableError(f"Error in _get_all_agents: {e}")
 
     def _get_microagents_in_host(self, param):
         path = f"/{param["domain"]}/{param["dns"]}/{param["host_name"]}/Microagent"
@@ -106,7 +106,7 @@ class HAWK_CONNECTOR:
             return self._fetch(path=path)
         except Exception as e:
             # return {}
-            RecoverableError(f"Error: while Fetching the microagents in host: {param} \n {e}")
+            raise RecoverableError(f"Error: while Fetching the microagents in host: {param} \n {e}")
 
     def get_all_microagents(self, agents):
         microagents = []
@@ -142,7 +142,7 @@ class HAWK_CONNECTOR:
             return microagents
     
         except Exception as e:
-            RecoverableError(f"Error in _get_all_microagents: {e}")
+            raise RecoverableError(f"Error in _get_all_microagents: {e}")
             # return []
 
 

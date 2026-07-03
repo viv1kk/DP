@@ -21,6 +21,14 @@ def _create_temp_table(mssql:MSSQL_Connector, temp_tbl:TableConfig):
     mssql_tbl_mgr.create_table()
 
 
+def _update_previous_status_application(table:TableConfig, mssql:MSSQL_Connector):
+    query = f"""
+        UPDATE {table.sql_table_name}
+        SET prev_status = status
+    """
+    mssql.build_query(query)
+
+
 def _update_host_table(df:pd.DataFrame, table:TableConfig, mssql:MSSQL_Connector):
     temp_tbl = copy.deepcopy(table)
     temp_tbl_name = f"#temp_{table.sql_table_name}"
@@ -122,7 +130,7 @@ def _update_host_table(df:pd.DataFrame, table:TableConfig, mssql:MSSQL_Connector
     _update_host_tracked_status()
 
 
-def _update_application_status_table(df:pd.DataFrame, table:TableConfig, mssql:MSSQL_Connector):
+def _update_application_status_table(df:pd.DataFrame, table:TableConfig, host_table:TableConfig, mssql:MSSQL_Connector):
     temp_tbl = copy.deepcopy(table)
     temp_tbl_name = f"#temp_{table.sql_table_name}"
     temp_tbl.sql_table_name = temp_tbl_name
@@ -131,9 +139,17 @@ def _update_application_status_table(df:pd.DataFrame, table:TableConfig, mssql:M
 
     def _mark_all_stopped_inferred():
         query = f"""
-            UPDATE {table.sql_table_name}
-            SET status = 'STOPPED_INFERRED'
-            WHERE application_tracked = 'Yes';
+            UPDATE a
+            SET a.status = CASE
+                            WHEN h.host_status = 'UNKNOWN' THEN 'UNKNOWN'
+                            ELSE 'STOPPED_INFERRED'
+                        END
+            FROM {table.sql_table_name} AS a
+            INNER JOIN {host_table.sql_table_name} AS h
+                ON a.dns = h.dns
+            AND a.domain = h.domain
+            AND a.host_name = h.host_name
+            WHERE a.application_tracked = 'Yes';
         """
         mssql.build_query(query)
 
@@ -233,6 +249,20 @@ def _update_application_status_table(df:pd.DataFrame, table:TableConfig, mssql:M
         """
         mssql.build_query(query)
 
+    def _mark_apps_with_host_status_unknown():
+        query = f"""
+            UPDATE a
+            SET a.status = 'UNKNOWN'
+            FROM {table.sql_table_name} AS a
+            INNER JOIN {host_table.sql_table_name} AS h
+                ON a.dns = h.dns
+            AND a.domain = h.domain
+            AND a.host_name = h.host_name
+            WHERE h.host_status = 'UNKNOWN';
+        """
+        mssql.build_query(query)
+
+    _update_previous_status_application(mssql=mssql, table=table)
     if df.empty:
         _mark_all_stopped_inferred()
         return
@@ -243,13 +273,14 @@ def _update_application_status_table(df:pd.DataFrame, table:TableConfig, mssql:M
     _insert_new()
     _mark_missing_stopped_inferred()
     _update_application_tracked_status()
+    _mark_apps_with_host_status_unknown()
 
 def load_data(data:dict[str:pd.DataFrame], db:MSSQL_Config, table:dict[str:TableConfig], logger:logging.Logger):
     try:
         mssql = MSSQL_Connector(db)
         def transaction(cursor):
             _update_host_table(df=data["host_status_df"], table=table["host_status_table"], mssql=mssql)
-            _update_application_status_table(df=data["microagent_status_df"], table=table["application_status_table"], mssql=mssql)
+            _update_application_status_table(df=data["microagent_status_df"], table=table["application_status_table"], host_table=table["host_status_table"], mssql=mssql)
         
         mssql.run_queries(transaction)
     except Exception as e:

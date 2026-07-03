@@ -1,8 +1,8 @@
 mssql:
   server: EURDC01EAQM024.nws.nexperia.com
-  driver: "{ODBC Driver 17 for SQL Server}"
+  # driver: "{ODBC Driver 17 for SQL Server}"
   database: "BACC_PROD"
-  # driver: "SQL Server"
+  driver: "SQL Server"
   # database: "BACC_TEST"
   username: ${BACC_PROD_DB_USERNAME}
   password: ${BACC_PROD_DB_PASSWORD}
