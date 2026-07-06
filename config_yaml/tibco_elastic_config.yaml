@@ -115,6 +115,116 @@ pipelines:
           "dateTime": "DATETIME2(0)"
         }
 
+  TIBCO_B2B_ERRORS:
+    index:
+      endpoint: http://eurdc01eapl025.nws.nexperia.com:9200/b2b_events*/_search
+      method: POST
+      payload: | 
+        {
+          "size": 10000,
+          "sort": [
+            {
+              "elasticEvent.timestamp": {
+                "order": "asc"
+              },
+              "_id": {
+                "order": "asc"
+              }
+            }
+          ],
+          "query": {
+            "bool": {
+              "filter": [
+                {
+                  "bool": {
+                    "should": [
+                      {
+                        "query_string": {
+                          "fields": [
+                            "elasticEvent.eventtype"
+                          ],
+                          "query": "*ERROR*"
+                        }
+                      },
+                      {
+                        "query_string": {
+                          "fields": [
+                            "elasticEvent.eventtype"
+                          ],
+                          "query": "*PENDING*"
+                        }
+                      },
+                      {
+                        "query_string": {
+                          "fields": [
+                            "elasticEvent.states.state"
+                          ],
+                          "query": "*ERROR*"
+                        }
+                      }
+                    ],
+                    "minimum_should_match": 1
+                  }
+                },
+                {
+                  "range": {
+                    "elasticEvent.timestamp": {
+                      "gte": "now-24h",
+                      "lte": "now"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      header: |
+       {"Content-Type": "application/json"}
+      
+      size: 10000
+    
+    timeout: 30
+
+    api_credentials:
+      username: ${ELASTIC_USERNAME}
+      password: ${ELASTIC_PASSWORD}
+
+    destination:
+      sql_table_name: TIBCO_B2B_ERRORS
+      sql_pk: ["_id"]
+      sql_pk_constraint_name: PK_TIBCO_B2B_ERRORS
+      sql_columnar_index_name: ncci_TIBCO_B2B_ERRORS
+      sql_columns: |
+        {
+          "correlationid" : "NVARCHAR(255)",
+          "usertransid": "NVARCHAR(255)",
+          "bctransid": "NVARCHAR(255)",
+          "domain": "NVARCHAR(255)",
+          "msgtype": "NVARCHAR(255)",
+          "msgversion1": "NVARCHAR(255)",
+          "msgversion2": "NVARCHAR(255)",
+          "msgversion3": "NVARCHAR(255)",
+          "operationdid": "NVARCHAR(255)",
+          "eventtype": "NVARCHAR(255)",
+          "eventmsg": "NVARCHAR(2000)",
+          "source": "NVARCHAR(255)",
+          "target": "NVARCHAR(255)",
+          "tpid": "NVARCHAR(255)",
+          "direction": "NVARCHAR(255)",
+          "aux1": "NVARCHAR(255)",
+          "aux2": "NVARCHAR(255)",
+          "aux3": "NVARCHAR(255)",
+          "aux7": "NVARCHAR(255)",
+          "aux12": "NVARCHAR(255)",
+          "_id": "VARCHAR(255) COLLATE Latin1_General_CS_AS NOT NULL",
+          "tpname": "NVARCHAR(255)",
+          "hostid": "NVARCHAR(255)",
+          "timestamp_UTC": "DATETIME2(0)",
+          "timestamp_CET": "DATETIME2(0)",
+          "timestamp_IST": "DATETIME2(0)"
+        }
+  
+
   # "gt": given_timestamp   # use gte if inclusive
   TIBCO_TRA_LOG:
     index:
