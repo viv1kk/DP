@@ -4,6 +4,7 @@ from config.hawk_config import HAWK_CONFIG
 from framework.decorators import retry
 from connectors.hawk_connector import HAWK_CONNECTOR
 from exceptions.RecoverableError import RecoverableError
+from exceptions.ExtractError import ExtractError
 import copy
 import logging
 import re
@@ -36,9 +37,6 @@ import pipelines.hawk.pipeline as hawk
 #         return None
 #     match.pop("number", None)
 #     return match
-
-
-import re
 
 
 import re
@@ -187,6 +185,7 @@ def extract_data(hawk_config: HAWK_CONFIG, logger: logging.Logger):
         
     except RecoverableError as e:
         logger.warning(f"Recoverable error: {e}")
+        raise ExtractError()
         return {
             "domains_list" : [],
             "agent_list" : [],
@@ -196,4 +195,4 @@ def extract_data(hawk_config: HAWK_CONFIG, logger: logging.Logger):
 
     except Exception as e:
         logger.error(f"Unexpected error: {e}")
-        raise
+        raise ExtractError() 
