@@ -6,6 +6,7 @@ from config.hawk_config import HAWK_CONFIG
 from config.mssql_config import MSSQL_Config
 from config.sql_tbl_config import TableConfig
 from connectors.mssql_connector import MSSQL_Connector
+from exceptions.ExtractError import ExtractError
 from framework.base_pipeline import BasePipeline
 from framework.logger import get_logger
 from framework.paths import DATA_DIR
@@ -74,10 +75,25 @@ class HAWK_APPLICATION_MONITORING(BasePipeline):
             try:
                 x-=1
                 self.etl()
-            except RecoverableError as e:
-                self.logger.exception(f"Recoverable Error : {e}")
-                continue
             
+            except ExtractError as e:
+                self.logger.exception(f"Extract Error HELLL: {e}")
+                
+                def error_handling():
+                    data = {
+                        "domains_list" : [],
+                        "agent_list" : [],
+                        "microagent_list" : pd.DataFrame(),
+                        "microagent_status" : []
+                    }
+                    self.load(data)
+                
+                error_handling()
+                raise 
+
+            except RecoverableError as e:
+                self.logger.error(f"Recoverable Error : {e}")
+                raise
             except Exception as e:
                 break
             
