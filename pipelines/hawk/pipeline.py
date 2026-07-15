@@ -77,25 +77,25 @@ class HAWK_APPLICATION_MONITORING(BasePipeline):
                 self.etl()
             
             except ExtractError as e:
-                self.logger.exception(f"Extract Error HELLL: {e}")
+                self.logger.error(f"Extract Error: {e}")
                 
                 def error_handling():
+                    self.logger.info("Running the staus update for the case of Extract Error.")
                     data = {
-                        "domains_list" : [],
-                        "agent_list" : [],
-                        "microagent_list" : pd.DataFrame(),
-                        "microagent_status" : []
+                        "raw_df" : pd.DataFrame(),
+                        "microagent_status_df" : pd.DataFrame(),
+                        "host_status_df" : pd.DataFrame()
                     }
                     self.load(data)
                 
                 error_handling()
-                raise 
+                return 
 
             except RecoverableError as e:
                 self.logger.error(f"Recoverable Error : {e}")
-                raise
+                return
             except Exception as e:
-                break
+                return
             
             else:
                 data = self.transform_data["raw_df"]

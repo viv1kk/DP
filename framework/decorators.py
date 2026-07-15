@@ -157,6 +157,7 @@ def pipeline_run_status(control_table="BACC_ETL_JOB_CONTROL"):
                                     INSERT (job_name, last_attempt_time)
                                     VALUES (?, ?);
                             """, job_name, ist_now, job_name, ist_now)
+
             except Exception as e:
                 raise RecoverableError(f"Error while updating the last attempt status -> {e}")
 
@@ -208,7 +209,7 @@ def pipeline_run_status(control_table="BACC_ETL_JOB_CONTROL"):
                 except Exception as e:
                     raise RecoverableError(f"Error while updating the Failure update attempt status -> {e}")
                 
-                raise RecoverableError(f"Error -> {e}")
+                raise
 
         return wrapper
     return decorator
