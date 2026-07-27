@@ -6,6 +6,7 @@ from config.mssql_config import MSSQL_Config
 from config.sql_tbl_config import TableConfig
 from connectors.mssql_connector import MSSQL_Connector
 from exceptions.RecoverableError import RecoverableError
+from exceptions.ExtractError import ExtractError
 from framework.base_pipeline import BasePipeline
 from framework.decorators import pipeline_run_status, singleton_init_once
 from framework.logger import get_logger
@@ -36,31 +37,32 @@ class ZABBIX_SERVICE_MONITORING(BasePipeline):
 
     @pipeline_run_status()
     def etl(self):
-        try:
-            self.data = self.extract()
-            self.transform_data = self.transform(data=self.data)
-            self.validate(df=self.transform_data)
-            self.load(df=self.transform_data)
-        except Exception as e:
-            raise RecoverableError(f"{e}")
-        
-        else:
-            # ZABBIX_SERVICE_MONITORING._cache["last_cached_df"] = self.transform_data["new_df"]
-            pass
+        self.data = self.extract()
+        self.transform_data = self.transform(data=self.data)
+        self.validate(df=self.transform_data)
+        self.load(df=self.transform_data)
+
 
     def run(self):
         x = 1
         while(x > 0):
             try:
-                x-=1
                 self.etl()
+
+            except ExtractError as e:
+                self.logger.exception(f"{e}", exc_info=False)
+                break
             except RecoverableError as e:
-                self.logger.exception(f"Recoverable Error : {e}")
+                x-=1
+                self.logger.exception(f"{e}", exc_info=False)
                 continue
-            
+
             except Exception as e:
                 break
 
+            else:
+                # ZABBIX_SERVICE_MONITORING._cache["last_cached_df"] = self.transform_data["new_df"]
+                break
 
     def extract(self)->list:
         self.logger.info("Extracting data")

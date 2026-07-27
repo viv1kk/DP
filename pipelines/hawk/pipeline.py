@@ -73,11 +73,10 @@ class HAWK_APPLICATION_MONITORING(BasePipeline):
         x = 1
         while(x > 0):
             try:
-                x-=1
                 self.etl()
-            
             except ExtractError as e:
-                self.logger.error(f"Extract Error: {e}")
+                x -= 1
+                self.logger.error(f'{e}', exc_info=False)
                 
                 def error_handling():
                     self.logger.info("Running the staus update for the case of Extract Error.")
@@ -89,19 +88,22 @@ class HAWK_APPLICATION_MONITORING(BasePipeline):
                     self.load(data)
                 
                 error_handling()
-                return 
+                continue 
 
             except RecoverableError as e:
-                self.logger.error(f"Recoverable Error : {e}")
-                return
+                x -= 1
+                self.logger.error(f'{e}', exc_info=False)
+                continue
             except Exception as e:
-                return
+                self.logger.error(f'{e}', exc_info=False)
+                break
             
             else:
                 data = self.transform_data["raw_df"]
                 data.drop(columns=["host_status", "status", "last_poll_at_IST", "microagent_name"], inplace=True, errors="ignore")
                 data.drop_duplicates(inplace=True)
                 HAWK_APPLICATION_MONITORING._cache["last_microagent_data"] = data
+                break
 
     def extract(self)->dict:
         self.logger.info("Extracting data")

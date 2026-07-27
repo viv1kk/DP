@@ -51,13 +51,16 @@ class ZABBIX_HOST_GROUP(BasePipeline):
         x = 1
         while(x > 0):
             try:
-                x-=1
                 self.etl()
             except RecoverableError as e:
+                x-=1
                 self.logger.exception(f"Recoverable Error : {e}")
                 continue
             
             except Exception as e:
+                break
+
+            else:
                 break
 
 

@@ -47,15 +47,17 @@ class TIBCO_B2B_ERRORS(BasePipeline):
         x = 1
         while(x > 0):
             try:
-                x-=1
                 self.etl()
             except RecoverableError as e:
+                x-=1
                 self.logger.exception(f"Recoverable Error : {e}")
                 continue
             
             except Exception as e:
                 break
 
+            else:
+                break
 
     def extract(self)->dict:
         self.logger.info("Extracting data")

@@ -183,16 +183,7 @@ def extract_data(hawk_config: HAWK_CONFIG, logger: logging.Logger):
             "microagent_status" : microagent_status
         }
         
-    except RecoverableError as e:
-        logger.warning(f"Recoverable error: {e}")
-        raise ExtractError(e) from e
-        # return {
-        #     "domains_list" : [],
-        #     "agent_list" : [],
-        #     "microagent_list" : pd.DataFrame(),
-        #     "microagent_status" : []
-        # }
 
     except Exception as e:
-        logger.error(f"Unexpected error: {e}")
+        logger.error(f"Unexpected error: {type(e).__name__} - {e}")
         raise ExtractError(e) from e 

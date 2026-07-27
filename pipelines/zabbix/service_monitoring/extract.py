@@ -2,6 +2,7 @@ import logging
 import requests
 from config.zabbix_config import ZABBIX_CONFIG
 from connectors.zabbix_connector import ZABBIX_CONNECTOR
+from exceptions.ExtractError import ExtractError
 from exceptions.RecoverableError import RecoverableError
 import pandas as pd
 import pipelines.zabbix.service_monitoring.pipeline as sm
@@ -45,5 +46,4 @@ def extract_data(zabbix_config:ZABBIX_CONFIG, logger:logging.Logger):
         return data.get("result", [])
     
     except Exception as e:
-        logger.error(f"Error in Extract Stage: {e}")
-        raise RecoverableError(f"Error in Extract Stage: {e}")
+        raise ExtractError(f"Error in Extract Stage: {type(e).__name__} - {e}")

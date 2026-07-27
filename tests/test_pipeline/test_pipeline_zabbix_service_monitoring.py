@@ -2,8 +2,12 @@ import pytest
 from pipelines.zabbix.service_monitoring.pipeline import ZABBIX_SERVICE_MONITORING
 import pandas as pd
 
-# def test_pipeline_extract():
-#     obj = ZABBIX_SERVICE_MONITORING()
+def test_pipeline_extract():
+    obj = ZABBIX_SERVICE_MONITORING()
+    obj.run()
+    obj.run()
+    obj.run()
+    obj.run()
 #     data = obj.extract()
 #     df = obj.transform(data=data)
 #     obj.validate(df=df)
