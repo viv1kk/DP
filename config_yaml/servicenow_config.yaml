@@ -8,7 +8,7 @@ pipelines:
       payload: |
         {
           "url_param": "sysparm_query=stateNOT IN6,7,8^stateISNOTEMPTY",
-          "columns":  ["sys_id","number","caller_id","cmdb_ci","short_description","description","state","incident_state","priority","impact","urgency","assignment_group","assigned_to","opened_at","resolved_at","closed_at","close_code","close_notes","reassignment_count", "reopen_count","sys_created_on","sys_updated_on","sys_updated_by","category","subcategory","business_service","made_sla", "contact_type"]
+          "columns":  ["sys_id","number","caller_id","cmdb_ci","short_description","description","state","incident_state","priority","impact","urgency","assignment_group","assigned_to","opened_at","resolved_at","closed_at","close_code","close_notes","reassignment_count", "reopen_count","sys_created_on","sys_updated_on","sys_updated_by","category","subcategory","business_service", "u_business_service_type","made_sla", "contact_type"]
         }
       retry_count: 3
       page_limit: 5000
@@ -45,6 +45,7 @@ pipelines:
           "closed_at": "DATETIME2(0)",
           "impact": "NVARCHAR(20)",
           "business_service": "NVARCHAR(128)",
+          "u_business_service_type": "NVARCHAR(128)",
           "reopen_count": "INT",
           "priority": "NVARCHAR(20)",
           "opened_at": "DATETIME2(0)",
