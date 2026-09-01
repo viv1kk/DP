@@ -138,15 +138,15 @@ def pipeline_run_status(control_table="BACC_ETL_JOB_CONTROL"):
                     job_names = [name.sql_table_name for _, name in self.tbls_config.items()]
                 else :
                     job_names = [self.tbl_config.sql_table_name]
-                
-                # job_name = self.tbl_config.sql_table_name
+
                 db = self.mssql_config
+
             # --------------------------------------------------
-            # 1️⃣ Update LAST ATTEMPT (IST)
+            # 1) Update LAST ATTEMPT (IST)
             # --------------------------------------------------
-                for job_name in job_names:
-                    with pyodbc.connect(db.connection_string(), autocommit=True) as conn:
-                        with conn.cursor() as cursor:
+                with pyodbc.connect(db.connection_string(), autocommit=True) as conn:
+                    with conn.cursor() as cursor:
+                        for job_name in job_names:
                             cursor.execute(f"""
                                 MERGE {control_table} AS target
                                 USING (SELECT ? AS job_name) AS source
@@ -161,43 +161,22 @@ def pipeline_run_status(control_table="BACC_ETL_JOB_CONTROL"):
             except Exception as e:
                 raise RecoverableError(f"Error while updating the last attempt status -> {e}")
 
-            error_msg = None
-
+            # --------------------------------------------------
+            # 2) Run the pipeline. Only a failure HERE is a job failure.
+            #    These status writes use their own autocommit connection on
+            #    purpose: the FAILED row must survive the data transaction
+            #    rolling back.
+            # --------------------------------------------------
             try:
-                # 🔹 Call function independently
                 func(self, *args, **kwargs)
-
-                ist_success_time = datetime.now(ZoneInfo("Asia/Kolkata"))
-
-                # --------------------------------------------------
-                # 2️⃣ Success update
-                # --------------------------------------------------
-                try:
-                    for job_name in job_names:
-                        with pyodbc.connect(db.connection_string(), autocommit=True) as conn:
-                            with conn.cursor() as cursor:
-                                cursor.execute(f"""
-                                    UPDATE {control_table}
-                                    SET last_success_time = ?,
-                                        last_status = ?,
-                                        last_message = ?
-                                    WHERE job_name = ?
-                                """, ist_success_time,
-                                    "SUCCESS",
-                                    "Completed successfully",
-                                    job_name)
-                except Exception as e:
-                    raise RecoverableError(f"Error while updating the Success attempt status -> {e}")
 
             except Exception as e:
                 error_msg = str(e)
-                # --------------------------------------------------
-                # 3️⃣ Failure update (IST)
-                # --------------------------------------------------
+
                 try:
-                    for job_name in job_names:
-                        with pyodbc.connect(db.connection_string(), autocommit=True) as conn:
-                            with conn.cursor() as cursor:
+                    with pyodbc.connect(db.connection_string(), autocommit=True) as conn:
+                        with conn.cursor() as cursor:
+                            for job_name in job_names:
                                 cursor.execute(f"""
                                     UPDATE {control_table}
                                     SET last_status = ?,
@@ -206,10 +185,35 @@ def pipeline_run_status(control_table="BACC_ETL_JOB_CONTROL"):
                                 """, "FAILED",
                                     error_msg[:1000],
                                     job_name)
-                except Exception as e:
-                    raise RecoverableError(f"Error while updating the Failure update attempt status -> {e}")
-                
+                except Exception as status_error:
+                    raise RecoverableError(f"Error while updating the Failure update attempt status -> {status_error}")
+
                 raise
+
+            # --------------------------------------------------
+            # 3) The pipeline itself succeeded and its data is committed.
+            #    Failing to RECORD that is not a job failure, so it must not
+            #    fall into the handler above and overwrite the row with
+            #    FAILED -- that would report a successful load as failed.
+            # --------------------------------------------------
+            ist_success_time = datetime.now(ZoneInfo("Asia/Kolkata"))
+
+            try:
+                with pyodbc.connect(db.connection_string(), autocommit=True) as conn:
+                    with conn.cursor() as cursor:
+                        for job_name in job_names:
+                            cursor.execute(f"""
+                                UPDATE {control_table}
+                                SET last_success_time = ?,
+                                    last_status = ?,
+                                    last_message = ?
+                                WHERE job_name = ?
+                            """, ist_success_time,
+                                "SUCCESS",
+                                "Completed successfully",
+                                job_name)
+            except Exception as e:
+                raise RecoverableError(f"Error while updating the Success attempt status -> {e}")
 
         return wrapper
     return decorator

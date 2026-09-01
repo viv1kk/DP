@@ -10,6 +10,11 @@ class MSSQL_Connector:
         self.db = db
         self.conn = None
         self.cursor = None
+        # Nesting bookkeeping. Every decorated call is a "frame"; the outermost
+        # one owns the connection. Only the outermost enabled=True frame owns
+        # the transaction, so an inner call can never commit half of one.
+        self._frame_depth = 0
+        self._txn_depth = 0
 
     def __del__(self):
         self._cleanup()
@@ -54,28 +59,45 @@ class MSSQL_Connector:
             def wrapper(self, *args, **kwargs):
                 conn, cursor = self._get_connection()
 
+                # Decided BEFORE we descend, so nested calls see false.
+                owns_connection = self._frame_depth == 0
+                owns_transaction = enabled and self._txn_depth == 0
+
+                self._frame_depth += 1
+                if enabled:
+                    self._txn_depth += 1
+
                 try:
                     result = func(self, cursor, *args, **kwargs)
 
-                    if enabled:
+                    if owns_transaction:
                         conn.commit()
 
                     return result
 
                 except Exception:
-                    if enabled:
+                    # Rollback only from the frame that owns the transaction.
+                    # An inner failure must leave the connection open so this
+                    # rollback can actually run -- tearing it down here would
+                    # leave the outer frame holding a closed handle, and the
+                    # rollback below would silently throw instead of running.
+                    if owns_transaction:
                         try:
                             conn.rollback()
                         except Exception:
                             pass
-
-                    # Always cleanup on failure
-                    self._cleanup()
                     raise
 
                 finally:
-                    # Only close if this is the top-level transaction
+                    self._frame_depth -= 1
                     if enabled:
+                        self._txn_depth -= 1
+
+                    # The outermost frame closes the connection, whether or not
+                    # it ran a transaction: a bare select_query() would
+                    # otherwise hold its connection open until garbage
+                    # collection.
+                    if owns_connection:
                         self._cleanup()
 
             return wrapper
