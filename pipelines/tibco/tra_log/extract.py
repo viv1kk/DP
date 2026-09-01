@@ -67,9 +67,7 @@ def extract_data(logger, es_config:ESConfig):
             raise RecoverableError("Empty result! fetched from TIBCO_TRA_LOG")
         return final_data
     except RecoverableError as e:
-        logger.warning(f"Recoverable error: {e}")
         raise
     
     except Exception as e:
-        logger.error(f"Unexpected error: {e}")
         raise

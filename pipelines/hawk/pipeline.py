@@ -8,7 +8,7 @@ from config.sql_tbl_config import TableConfig
 from connectors.mssql_connector import MSSQL_Connector
 from exceptions.ExtractError import ExtractError
 from framework.base_pipeline import BasePipeline
-from framework.logger import get_logger
+from framework.logger import get_logger, log_exception
 from framework.paths import DATA_DIR
 from framework.util import load_excel_to_df
 from framework.validation import validate_columns
@@ -73,7 +73,7 @@ class HAWK_APPLICATION_MONITORING(BasePipeline):
         try:
             self.etl()
         except ExtractError as e:
-            self.logger.error(f'{e}', exc_info=False)
+            log_exception(self.logger, "Extract Error", e)
 
             def error_handling():
                 self.logger.info("Running the staus update for the case of Extract Error.")
@@ -87,9 +87,9 @@ class HAWK_APPLICATION_MONITORING(BasePipeline):
             error_handling()
 
         except RecoverableError as e:
-            self.logger.error(f'{e}', exc_info=False)
+            log_exception(self.logger, "Recoverable Error", e)
         except Exception as e:
-            self.logger.error(f'{e}', exc_info=False)
+            log_exception(self.logger, "Unexpected Error", e)
         else:
             data = self.transform_data["raw_df"]
 
@@ -143,7 +143,6 @@ class HAWK_APPLICATION_MONITORING(BasePipeline):
                 raise ValueError(f"Missing required columns: {missing}")
             
         except Exception as e:
-            self.logger.error(f"Unexpected Error: {e}" )
             raise RecoverableError(e)
 
 

@@ -8,7 +8,7 @@ from connectors.mssql_connector import MSSQL_Connector
 from exceptions.RecoverableError import RecoverableError
 from framework.base_pipeline import BasePipeline
 from framework.decorators import pipeline_run_status, singleton_init_once
-from framework.logger import get_logger
+from framework.logger import get_logger, log_exception
 from framework.mssql_table_reset import MSSQL_TABLE_MANAGER
 from .extract import extract_data
 from .transform import transform
@@ -52,9 +52,9 @@ class ZABBIX_HOST_PROBLEMS(BasePipeline):
         try:
             self.etl()
         except RecoverableError as e:
-            self.logger.exception(f"Recoverable Error : {e}")
+            log_exception(self.logger, "Recoverable Error", e)
         except Exception as e:
-            self.logger.error(f"Unexpected Error : {e}", exc_info=False)
+            log_exception(self.logger, "Unexpected Error", e)
 
 
     def extract(self)->dict:
@@ -84,7 +84,6 @@ class ZABBIX_HOST_PROBLEMS(BasePipeline):
                 raise ValueError(f"Missing required columns: {missing}")
             
         except Exception as e:
-            self.logger.error(f"Unexpected Error: {e}" )
             raise RecoverableError(e)
 
 

@@ -130,5 +130,4 @@ def transform(data:list[dict], logger:logging.Logger)->dict:
 
     
     except Exception as e:
-        logger.error(f"Error occured in Transform Stage: {e}")
-        raise RecoverableError(f"{e}")
+        raise RecoverableError(f"Transform failed: {e}")

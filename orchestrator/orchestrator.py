@@ -2,6 +2,8 @@ import threading
 import time
 import importlib
 
+from framework.logger import get_logger, format_error
+
 from pydantic import BaseModel
 from typing import Optional, Dict
 
@@ -17,6 +19,7 @@ class PipelineWorker:
         self.thread = None
         self.stop_event = threading.Event()
         self.lock = threading.Lock()
+        self.logger = get_logger(name)
 
     def start(self, interval: Optional[int] = None):
         with self.lock:
@@ -38,7 +41,7 @@ class PipelineWorker:
         return f"{self.name} started"
 
     def _run_loop(self):
-        print(f"[STARTED] {self.name} (interval={self.interval}s)")
+        self.logger.info(f"Worker started (interval={self.interval}s)")
 
         while not self.stop_event.is_set():
             try:
@@ -48,18 +51,18 @@ class PipelineWorker:
                         self.pipeline.run()
                         break
                     except Exception as e:
-                        print(f"[{self.name}] Attempt {attempt + 1} failed: {e}")
+                        self.logger.error(f"Attempt {attempt + 1} escaped run(): {format_error(e)}")
 
                         if attempt < 2:
                             time.sleep(2)
 
             except Exception as e:
-                print(f"[{self.name}] Fatal error: {e}")
+                self.logger.error(f"Worker loop error: {format_error(e)}")
 
             # interruptible sleep
             self.stop_event.wait(self.interval)
 
-        print(f"[STOPPED] {self.name}")
+        self.logger.info("Worker stopped")
 
     def stop(self):
         with self.lock:

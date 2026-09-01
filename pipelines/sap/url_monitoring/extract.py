@@ -23,5 +23,4 @@ def extract_data(base_table:TableConfig, db:MSSQL_Config, logger:logging.Logger)
         return df
     
     except Exception as e:
-        logger.error(f"Unexpected error: {e}")
         raise RecoverableError(f"{e}")

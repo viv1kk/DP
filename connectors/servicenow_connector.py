@@ -155,7 +155,6 @@ class SNOW_CONNECTOR:
                 offset += page_limit
 
             except Exception as e:
-                self.logger.error(f"Error fetching incidents: {e}")
                 raise RecoverableError(f"Error fetching incidents: {e}")
 
         self.logger.info(f"Total incidents fetched: {len(all_results)}")

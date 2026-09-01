@@ -29,9 +29,7 @@ def extract_data(sap_config: SAPConfig, logger: logging.Logger):
 
         return all_events
     except RecoverableError as e:
-        logger.warning(f"Recoverable error: {e}")
         raise
 
     except Exception as e:
-        logger.error(f"Unexpected error: {e}")
         raise

@@ -1,5 +1,5 @@
 from config.hawk_config import HAWK_CONFIG
-from framework.logger import get_logger
+from framework.logger import get_logger, format_error
 from framework.decorators import hawk_http_exception_handler
 import requests
 from requests.auth import HTTPBasicAuth
@@ -290,7 +290,7 @@ class HAWK_CONNECTOR:
             return None
     
         except Exception as e:
-            print("Error in _identify_microagent_type:", e)
+            self.logger.error(f"_identify_invocation_payload failed: {format_error(e)}")
             return None
         
 
@@ -352,7 +352,7 @@ class HAWK_CONNECTOR:
             return row
     
         except Exception as e:
-            print(f"Error in worker for {m_agent.get('microagent_name')}: {e}")
+            self.logger.error(f"Status lookup failed for microagent {m_agent.get('microagent_name')}: {format_error(e)}")
             return None
     
 
@@ -376,5 +376,5 @@ class HAWK_CONNECTOR:
             return results
     
         except Exception as e:
-            print("Error:", e)
+            self.logger.error(f"get_status_for_all_microagents failed: {format_error(e)}")
             return []

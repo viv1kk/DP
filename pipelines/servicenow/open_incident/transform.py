@@ -199,5 +199,4 @@ def transform(data:list, logger:logging.Logger)->pd.DataFrame:
         return df
     
     except Exception as e:
-        logger.error(f"Error occured in Transform Stage: {e}")
-        raise RecoverableError(f"{e}")
+        raise RecoverableError(f"Transform failed: {e}")

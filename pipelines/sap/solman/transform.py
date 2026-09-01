@@ -10,6 +10,9 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 import pytz
 import numpy as np
+from framework.logger import get_logger, format_error
+
+logger = get_logger("SAP_SOLMAN")
 
 
 def add_sid(df:pd.DataFrame)->pd.DataFrame:
@@ -56,7 +59,7 @@ def fetch_solution(db: MSSQL_Config, table: TableConfig, columns:list):
         return df
 
     except Exception as e:
-        print("Error fetching aggregated SID/Poll_Result:", e)
+        logger.error(f"fetch_solution failed, continuing with no solution data: {format_error(e)}")
         return pd.DataFrame()
     
 

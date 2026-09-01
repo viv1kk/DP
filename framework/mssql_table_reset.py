@@ -1,11 +1,13 @@
 from config.mssql_config import MSSQL_Config
 from connectors.mssql_connector import MSSQL_Connector
 from config.sql_tbl_config import TableConfig
+from framework.logger import get_logger, format_error
 
 
 class MSSQL_TABLE_MANAGER:
     def __init__(self, tbl_config:TableConfig, mssql:MSSQL_Connector = None):
         self.tbl_config = tbl_config
+        self.logger = get_logger("MSSQL_TABLE_MANAGER")
         if not mssql:
             self.mssql = MSSQL_Connector(db=MSSQL_Config())
         else: 
@@ -44,7 +46,7 @@ class MSSQL_TABLE_MANAGER:
         try:
             self.mssql.build_query(query=query)
         except Exception as e:
-            print(f"❌ Error dropping index: {e}")
+            self.logger.error(f"Failed to drop index on {self.tbl_config.sql_table_name}: {format_error(e)}")
 
     def create_nonclustered_columnstore_index(self):
         cols = ", ".join(f"[{col}]" for col in self.tbl_config.sql_columnar_index_columns)
@@ -54,7 +56,7 @@ class MSSQL_TABLE_MANAGER:
             self.mssql.build_query(query=query)
             # print(f"✅ Created nonclustered columnstore index [{tbl.columnar_index_name}] on [{tbl.table_name}] for columns: {cols}")
         except Exception as e:
-            print(f"❌ Error creating index: {e}")
+            self.logger.error(f"Failed to create columnstore index on {self.tbl_config.sql_table_name}: {format_error(e)}")
 
 
     def recreate(self):

@@ -43,5 +43,4 @@ def extract_data(zabbix_config:ZABBIX_CONFIG, logger:logging.Logger)->dict:
         }
     
     except Exception as e:
-        logger.error(f"Unexpected error: {e}")
         raise RecoverableError(f"{e}")

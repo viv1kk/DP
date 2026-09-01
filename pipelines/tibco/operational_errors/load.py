@@ -25,5 +25,4 @@ def load_data(df:pd.DataFrame, db:MSSQL_Config, table:TableConfig, logger):
         mssql.run_queries(transaction)
     
     except Exception as e:
-        logger.warning(f"Recoverable error: {e}")
         raise RecoverableError(f"Recoverable Error: load_data -> {e}")

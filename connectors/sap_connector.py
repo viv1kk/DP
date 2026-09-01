@@ -37,7 +37,6 @@ class SAP_SOLMAN_CONNECTOR:
             return session
         
         except requests.RequestException as e:
-            self.logger.error(f"Session initialization failed: {e}")
             raise RecoverableError(f"Session initialization failed: {e}") 
         
     
@@ -60,7 +59,6 @@ class SAP_SOLMAN_CONNECTOR:
             data = self.get_api_data(url)
             return data.get('d', {}).get('results', [])
         except Exception as e:
-            self.logger.error(f"Failed to fetch system data: {e}")
             raise RecoverableError(f"Failed to fetch system data: {e}") 
         
     
@@ -93,7 +91,6 @@ class SAP_SOLMAN_CONNECTOR:
                 try:
                     records.extend(future.result())
                 except Exception as e:
-                    self.logger.error(f"Component fetch error: {e}")
                     raise RecoverableError(f"Component fetch error: {e}")
         df = pd.DataFrame(records)
         return df.dropna(subset=['MoContextid']).query("MoContextid != ''")

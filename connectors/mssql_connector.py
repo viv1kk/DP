@@ -2,6 +2,7 @@ import functools
 import pyodbc
 from config.mssql_config import MSSQL_Config
 from config.sql_tbl_config import TableConfig
+from framework.logger import get_logger, format_error
 import pandas as pd
 
 
@@ -10,6 +11,7 @@ class MSSQL_Connector:
         self.db = db
         self.conn = None
         self.cursor = None
+        self.logger = get_logger("MSSQL_Connector")
         # Nesting bookkeeping. Every decorated call is a "frame"; the outermost
         # one owns the connection. Only the outermost enabled=True frame owns
         # the transaction, so an inner call can never commit half of one.
@@ -135,28 +137,33 @@ class MSSQL_Connector:
 
             def row_generator():
                 for idx, row in enumerate(batch.itertuples(index=False, name=None)):
-                    cleaned = tuple(None if pd.isna(v) else v for v in row)
-                    try:
-                        yield cleaned
-                    except Exception as e:
-                        print(f"Error while yielding row {i + idx}: {cleaned}")
-                        raise
+                    # A failure here surfaces from build_many_query and is reported
+                    # by the batch handler below, so it needs no logging of its own.
+                    yield tuple(None if pd.isna(v) else v for v in row)
 
             try:
                 self.build_many_query(query=insert_sql, data=row_generator())
 
             except Exception as e:
-                print(f"Batch failed at index range {i}–{i+batch_size}")
-                
-                # 🔍 fallback to row-by-row to pinpoint exact failure
+                self.logger.warning(
+                    f"Batch insert failed for rows {i}-{i + len(batch) - 1} of "
+                    f"{table.sql_table_name} ({format_error(e)}); retrying row by row "
+                    f"to identify the offending row."
+                )
+
+                # fallback to row-by-row to pinpoint exact failure
                 for idx, row in enumerate(batch.itertuples(index=False, name=None)):
                     cleaned = tuple(None if pd.isna(v) else v for v in row)
                     try:
                         self.build_many_query(query=insert_sql, data=[cleaned])
                     except Exception as inner_e:
-                        print(f"❌ Failed row at global index {i + idx}")
-                        print(f"Tuple: {cleaned}")
-                        print(f"Error: {inner_e}")
+                        self.logger.error(
+                            f"Insert failed at row {i + idx} of "
+                            f"{table.sql_table_name}: {format_error(inner_e)}"
+                        )
+                        # The row holds business data, so keep it out of the
+                        # normal log stream but available when debugging.
+                        self.logger.debug(f"Failing row {i + idx}: {cleaned}")
                         raise  # or continue if you want to skip bad rows
 
                 raise

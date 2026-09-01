@@ -159,5 +159,4 @@ def transform(data: dict) -> dict:
     except Exception as e:
         # A failure here is a defect in this code, not an outage. Raising keeps
         # load() from running, so a bug can never repaint the estate UNKNOWN.
-        logger.error(f"Transform failed: {type(e).__name__} - {e}")
-        raise RecoverableError(f"Error : {e}")
+        raise RecoverableError(f"Transform failed: {e}")

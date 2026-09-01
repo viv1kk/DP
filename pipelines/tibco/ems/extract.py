@@ -48,9 +48,7 @@ def extract_data(logger, es_config: ESConfig, search_after=None):
         return all_data
 
     except RecoverableError as e:
-        logger.warning(f"Recoverable error: {e}")
         raise
 
     except Exception as e:
-        logger.error(f"Unexpected error: {e}")
         raise

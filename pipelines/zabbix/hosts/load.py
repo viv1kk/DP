@@ -79,5 +79,4 @@ def load_data(data:dict, db:MSSQL_Config, table:TableConfig, logger:logging.Logg
         # mssql.truncate_and_insert_df(df=df, table=table)
     
     except Exception as e:
-        logger.warning(f"Recoverable error: {e}")
         raise RecoverableError(f"Recoverable Error: load_data -> {e}")

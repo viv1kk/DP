@@ -185,5 +185,4 @@ def extract_data(hawk_config: HAWK_CONFIG, logger: logging.Logger):
         
 
     except Exception as e:
-        logger.error(f"Unexpected error: {type(e).__name__} - {e}")
         raise ExtractError(e) from e 

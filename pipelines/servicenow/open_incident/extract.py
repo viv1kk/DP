@@ -12,5 +12,4 @@ def extract_data(snow_config:SNOW_CONFIG, logger:logging.Logger):
         return data
     
     except Exception as e:
-        logger.error(f"Unexpected error: {e}")
         raise RecoverableError(f"{e}")
