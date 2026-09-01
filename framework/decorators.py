@@ -219,12 +219,30 @@ import requests
 import time
 from functools import wraps
 
-def elastic_http_exception_handler(retries=1, delay=2):
+def _resolve_attempts(instance, fallback):
+    """Attempt count for a single call.
+
+    These handlers are applied at class-definition time, so they cannot see the
+    pipeline's config. Resolve it per call instead: honour
+    <connector>.config.retry_count when it is a usable positive integer, and
+    fall back to the decorator default when the config declares none.
+    """
+    configured = getattr(getattr(instance, "config", None), "retry_count", None)
+    try:
+        configured = int(configured)
+    except (TypeError, ValueError):
+        return fallback
+    return configured if configured > 0 else fallback
+
+
+def elastic_http_exception_handler(retries=3, delay=2):
     def decorator(func):
         @wraps(func)
         def wrapper(self, *args, **kwargs):
 
-            for attempt in range(1, retries + 1):
+            attempts = _resolve_attempts(self, retries)
+
+            for attempt in range(1, attempts + 1):
                 try:
                     return func(self, *args, **kwargs)
                 except requests.exceptions.ConnectionError:
@@ -247,19 +265,22 @@ def elastic_http_exception_handler(retries=1, delay=2):
                 except Exception as e:
                     self.logger.error(f"Unexpected error: {e}")
                     break
-                time.sleep(delay)
+                if attempt < attempts:
+                    time.sleep(delay)
 
             return self._fallback(*args, **kwargs)
         return wrapper
     return decorator
 
 
-def snow_http_exception_handler(retries=1, delay=2):
+def snow_http_exception_handler(retries=3, delay=2):
     def decorator(func):
         @wraps(func)
         def wrapper(self, *args, **kwargs):
             
-            for attempt in range(1, retries + 1):
+            attempts = _resolve_attempts(self, retries)
+
+            for attempt in range(1, attempts + 1):
                 try:
                     return func(self, *args, **kwargs)
                 except requests.exceptions.ConnectionError:
@@ -282,19 +303,22 @@ def snow_http_exception_handler(retries=1, delay=2):
                 except Exception as e:
                     self.logger.error(f"Unexpected error: {e}")
                     break
-                time.sleep(delay)
+                if attempt < attempts:
+                    time.sleep(delay)
 
             raise RecoverableError("All attempts failed to get data!")
         return wrapper
     return decorator
 
 
-def zabbix_http_exception_handler(retries=1, delay=2):
+def zabbix_http_exception_handler(retries=3, delay=2):
     def decorator(func):
         @wraps(func)
         def wrapper(self, *args, **kwargs):
             
-            for attempt in range(1, retries + 1):
+            attempts = _resolve_attempts(self, retries)
+
+            for attempt in range(1, attempts + 1):
                 try:
                     return func(self, *args, **kwargs)
                 except requests.exceptions.ConnectionError:
@@ -317,19 +341,22 @@ def zabbix_http_exception_handler(retries=1, delay=2):
                 except Exception as e:
                     self.logger.error(f"Unexpected error: {e}")
                     break
-                time.sleep(delay)
+                if attempt < attempts:
+                    time.sleep(delay)
 
             raise RecoverableError("All attempts failed to get data!")
         return wrapper
     return decorator
 
 
-def hawk_http_exception_handler(retries=1, delay=2):
+def hawk_http_exception_handler(retries=3, delay=2):
     def decorator(func):
         @wraps(func)
         def wrapper(self, *args, **kwargs):
             
-            for attempt in range(1, retries + 1):
+            attempts = _resolve_attempts(self, retries)
+
+            for attempt in range(1, attempts + 1):
                 try:
                     return func(self, *args, **kwargs)
                 except requests.exceptions.ConnectionError:
@@ -352,7 +379,8 @@ def hawk_http_exception_handler(retries=1, delay=2):
                 except Exception as e:
                     self.logger.error(f"Unexpected error: {e}")
                     break
-                time.sleep(delay)
+                if attempt < attempts:
+                    time.sleep(delay)
 
             raise RecoverableError("All attempts failed to get data!")
         return wrapper

@@ -44,25 +44,15 @@ class ZABBIX_SERVICE_MONITORING(BasePipeline):
 
 
     def run(self):
-        x = 1
-        while(x > 0):
-            try:
-                self.etl()
+        try:
+            self.etl()
+        except ExtractError as e:
+            self.logger.error(f"{e}", exc_info=False)
+        except RecoverableError as e:
+            self.logger.error(f"{e}", exc_info=False)
+        except Exception as e:
+            self.logger.error(f"Unexpected Error : {e}", exc_info=False)
 
-            except ExtractError as e:
-                self.logger.exception(f"{e}", exc_info=False)
-                break
-            except RecoverableError as e:
-                x-=1
-                self.logger.exception(f"{e}", exc_info=False)
-                continue
-
-            except Exception as e:
-                break
-
-            else:
-                # ZABBIX_SERVICE_MONITORING._cache["last_cached_df"] = self.transform_data["new_df"]
-                break
 
     def extract(self)->list:
         self.logger.info("Extracting data")

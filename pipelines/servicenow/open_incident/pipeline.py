@@ -42,20 +42,12 @@ class SNOW_OPEN_INCIDENTS(BasePipeline):
                 
 
     def run(self):
-        x = 1
-        while(x > 0):
-            try:
-                self.etl()
-            except RecoverableError as e:
-                x-=1
-                self.logger.exception(f"Recoverable Error : {e}")
-                continue
-            
-            except Exception as e:
-                break
-
-            else:
-                break
+        try:
+            self.etl()
+        except RecoverableError as e:
+            self.logger.exception(f"Recoverable Error : {e}")
+        except Exception as e:
+            self.logger.error(f"Unexpected Error : {e}", exc_info=False)
 
 
     def extract(self)->dict:

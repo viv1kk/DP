@@ -70,40 +70,32 @@ class HAWK_APPLICATION_MONITORING(BasePipeline):
         self.load(data=self.transform_data)
                 
     def run(self):
-        x = 1
-        while(x > 0):
-            try:
-                self.etl()
-            except ExtractError as e:
-                x -= 1
-                self.logger.error(f'{e}', exc_info=False)
-                
-                def error_handling():
-                    self.logger.info("Running the staus update for the case of Extract Error.")
-                    data = {
-                        "raw_df" : pd.DataFrame(),
-                        "microagent_status_df" : pd.DataFrame(),
-                        "host_status_df" : pd.DataFrame()
-                    }
-                    self.load(data)
-                
-                error_handling()
-                continue 
+        try:
+            self.etl()
+        except ExtractError as e:
+            self.logger.error(f'{e}', exc_info=False)
 
-            except RecoverableError as e:
-                x -= 1
-                self.logger.error(f'{e}', exc_info=False)
-                continue
-            except Exception as e:
-                self.logger.error(f'{e}', exc_info=False)
-                break
-            
-            else:
-                data = self.transform_data["raw_df"]
-                data.drop(columns=["host_status", "status", "last_poll_at_IST", "microagent_name"], inplace=True, errors="ignore")
-                data.drop_duplicates(inplace=True)
-                HAWK_APPLICATION_MONITORING._cache["last_microagent_data"] = data
-                break
+            def error_handling():
+                self.logger.info("Running the staus update for the case of Extract Error.")
+                data = {
+                    "raw_df" : pd.DataFrame(),
+                    "microagent_status_df" : pd.DataFrame(),
+                    "host_status_df" : pd.DataFrame()
+                }
+                self.load(data)
+
+            error_handling()
+
+        except RecoverableError as e:
+            self.logger.error(f'{e}', exc_info=False)
+        except Exception as e:
+            self.logger.error(f'{e}', exc_info=False)
+        else:
+            data = self.transform_data["raw_df"]
+            data.drop(columns=["host_status", "status", "last_poll_at_IST", "microagent_name"], inplace=True, errors="ignore")
+            data.drop_duplicates(inplace=True)
+            HAWK_APPLICATION_MONITORING._cache["last_microagent_data"] = data
+
 
     def extract(self)->dict:
         self.logger.info("Extracting data")

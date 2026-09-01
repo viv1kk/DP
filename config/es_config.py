@@ -11,6 +11,9 @@ class ESConfig:
         self.payload = json.loads(pipe_conf["index"]["payload"])
         self.header = json.loads(pipe_conf["index"]["header"])
         self.timeout = pipe_conf["timeout"]
+        # Optional: no elastic pipeline declares one today, so the HTTP
+        # handler falls back to its default when this is None.
+        self.retry_count = pipe_conf.get("retry_count")
         self.username = pipe_conf["api_credentials"]["username"]
         self.password = pipe_conf["api_credentials"]["password"]
 

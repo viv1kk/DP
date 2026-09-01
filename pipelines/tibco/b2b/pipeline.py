@@ -44,20 +44,13 @@ class TIBCO_B2B_ERRORS(BasePipeline):
         self.load(df=self.transform_data, db=self.mssql_config, table=self.tbl_config)
                 
     def run(self):
-        x = 1
-        while(x > 0):
-            try:
-                self.etl()
-            except RecoverableError as e:
-                x-=1
-                self.logger.exception(f"Recoverable Error : {e}")
-                continue
-            
-            except Exception as e:
-                break
+        try:
+            self.etl()
+        except RecoverableError as e:
+            self.logger.exception(f"Recoverable Error : {e}")
+        except Exception as e:
+            self.logger.error(f"Unexpected Error : {e}", exc_info=False)
 
-            else:
-                break
 
     def extract(self)->dict:
         self.logger.info("Extracting data")

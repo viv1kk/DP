@@ -48,20 +48,12 @@ class ZABBIX_HOST_GROUP(BasePipeline):
             ZABBIX_HOST_GROUP._cache["last_cached_df"] = self.transform_data["new_df"]
 
     def run(self):
-        x = 1
-        while(x > 0):
-            try:
-                self.etl()
-            except RecoverableError as e:
-                x-=1
-                self.logger.exception(f"Recoverable Error : {e}")
-                continue
-            
-            except Exception as e:
-                break
-
-            else:
-                break
+        try:
+            self.etl()
+        except RecoverableError as e:
+            self.logger.exception(f"Recoverable Error : {e}")
+        except Exception as e:
+            self.logger.error(f"Unexpected Error : {e}", exc_info=False)
 
 
     def extract(self)->dict:
