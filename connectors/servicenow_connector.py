@@ -113,8 +113,10 @@ class SNOW_CONNECTOR:
     def fetch_incidents(self, since=None, fields=None):
         params = self._prepare_request(since, fields)
         
+        page_limit = int(self.config.page_limit)
         all_results = []
         offset = 0
+        previous_first_row = None
         while True:
             params["sysparm_offset"] = str(offset)
             try:
@@ -122,17 +124,41 @@ class SNOW_CONNECTOR:
                 if not data:
                     break
 
-                all_results.extend(data.get("result", []))
-                # print("raw data length : ", len(data))
-                if len(data) < self.config.page_limit:
-                    break  # No more pages
-                offset += self.config.page_limit
+                # Page size is the length of the "result" list, not of the
+                # response object: len(data) counts top-level JSON keys (1),
+                # which is always < page_limit and ended the loop after the
+                # first request, silently capping the fetch at one page.
+                page = data.get("result", [])
+                if not page:
+                    break
+
+                # A server that ignores sysparm_offset returns the same full
+                # page forever. Detect that exact signature rather than capping
+                # the row count, so a genuinely large result set is never
+                # truncated. Checked before accumulating, so a repeated page is
+                # not counted twice; compares the whole first row, so it holds
+                # regardless of which sysparm_fields the caller asked for.
+                if page[0] == previous_first_row:
+                    self.logger.error(
+                        f"ServiceNow returned the same page twice at offset {offset}; "
+                        f"sysparm_offset appears to be ignored. Stopping with "
+                        f"{len(all_results)} incidents."
+                    )
+                    break
+
+                all_results.extend(page)
+
+                if len(page) < page_limit:
+                    break  # short page -> that was the last one
+
+                previous_first_row = page[0]
+                offset += page_limit
 
             except Exception as e:
                 self.logger.error(f"Error fetching incidents: {e}")
                 raise RecoverableError(f"Error fetching incidents: {e}")
 
-        # logger.info(f"Total incidents fetched: {len(all_results)}")
+        self.logger.info(f"Total incidents fetched: {len(all_results)}")
         return all_results
 
     def __repr__(self):
