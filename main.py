@@ -8,6 +8,9 @@ from typing import List
 app = FastAPI()
 orchestrator = Orchestrator()
 
+from routes.interval_control import build_router
+app.include_router(build_router(orchestrator))
+
 # =========================
 # API Endpoints
 # =========================
