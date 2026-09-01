@@ -7,7 +7,27 @@ from datetime import datetime
 from framework.paths import DATA_DIR
 import pipelines.zabbix.host_problems.pipeline as zb
 
-def combine_problems_and_triggers(data:dict):
+# Keys produced for every problem/item pair, plus the two columns derived further
+# down. Kept explicit so a poll with no usable rows can still return a correctly
+# shaped frame instead of a column-less one.
+PROBLEM_COLUMNS = [
+    "eventid", "problem_time_CET", "problem_time_IST", "clock", "severity",
+    "acknowledged", "suppressed", "host_name", "host_id", "problem_name",
+    "item_id", "item_key", "item_name", "item_delay",
+    "servicenow_ticket", "servicenow_ticket_link",
+]
+DERIVED_COLUMNS = ["category", "host_name_short"]
+
+
+def _log_skipped(logger:logging.Logger, eventids:list, reason:str):
+    if not eventids:
+        return
+    sample = ", ".join(str(e) for e in eventids[:10])
+    more = f" (+{len(eventids) - 10} more)" if len(eventids) > 10 else ""
+    logger.warning(f"Skipped {len(eventids)} problem(s) - {reason}. eventids: {sample}{more}")
+
+
+def combine_problems_and_triggers(data:dict, logger:logging.Logger):
     triggers = data["triggers"]
     problems = data["active_problems"]
 
@@ -15,23 +35,45 @@ def combine_problems_and_triggers(data:dict):
 
     # Combine problems and triggers
     enriched = []
+    orphaned = []
     for prob in problems:
         trigger_id = prob["objectid"]
         trigger = trigger_map.get(trigger_id)
+        if trigger is None:
+            # trigger.get returned fewer triggers than we asked for: the trigger was
+            # removed inside the 24h problem window, or the API account cannot see it.
+            orphaned.append(prob.get("eventid"))
+            continue
         enriched.append({
             "problem": prob,
-            "trigger": trigger  # could be None if not found
+            "trigger": trigger
         })
+
+    _log_skipped(logger, orphaned, "no matching trigger returned by trigger.get")
 
     return enriched
 
-def problems_to_dataframe(results):
+def problems_to_dataframe(results, logger:logging.Logger):
     data = []
+    no_host = []
+    no_items = []
     for entry in results:
         problem = entry.get("problem", {})
-        trigger = entry.get("trigger", {})
-        host = trigger.get("hosts", [{}])[0]
-        items = trigger.get("items", [])
+        # The key is always present and may be None, so a .get() default never fires.
+        trigger = entry.get("trigger") or {}
+        hosts = trigger.get("hosts") or []
+        items = trigger.get("items") or []
+
+        # A problem needs a host and at least one item to form a row. Dropping it
+        # silently is how a live alert used to disappear from the dashboard.
+        if not hosts:
+            no_host.append(problem.get("eventid"))
+            continue
+        if not items:
+            no_items.append(problem.get("eventid"))
+            continue
+
+        host = hosts[0]
         ticket_id = None
         ticket_link = None
 
@@ -63,6 +105,18 @@ def problems_to_dataframe(results):
                 "servicenow_ticket": ticket_id,
                 "servicenow_ticket_link": ticket_link
             })
+
+    _log_skipped(logger, no_host, "trigger returned no hosts")
+    _log_skipped(logger, no_items, "trigger returned no items")
+
+    if not data:
+        # No rows is a legitimate state (nothing is alerting). Return the right shape
+        # so validate and the truncate-and-insert load empty the table cleanly.
+        if results:
+            logger.warning(f"All {len(results)} problem(s) were skipped; the destination table will be emptied.")
+        else:
+            logger.info("No active problems to report; the destination table will be emptied.")
+        return pd.DataFrame(columns=PROBLEM_COLUMNS + DERIVED_COLUMNS)
 
     df = pd.DataFrame(data)
     df = df.astype({
@@ -193,8 +247,8 @@ def get_changed_and_deleted_zabbix_problems(latest_df: pd.DataFrame)->dict:
 
 def transform(data:dict, logger:logging.Logger)->dict:
     try:
-        enriched_data = combine_problems_and_triggers(data)
-        df = problems_to_dataframe(enriched_data)
+        enriched_data = combine_problems_and_triggers(data, logger=logger)
+        df = problems_to_dataframe(enriched_data, logger=logger)
         ret = get_changed_and_deleted_zabbix_problems(latest_df=df)
         return ret
     
