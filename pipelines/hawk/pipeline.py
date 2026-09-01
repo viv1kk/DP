@@ -92,9 +92,18 @@ class HAWK_APPLICATION_MONITORING(BasePipeline):
             self.logger.error(f'{e}', exc_info=False)
         else:
             data = self.transform_data["raw_df"]
-            data.drop(columns=["host_status", "status", "last_poll_at_IST", "microagent_name"], inplace=True, errors="ignore")
-            data.drop_duplicates(inplace=True)
-            HAWK_APPLICATION_MONITORING._cache["last_microagent_data"] = data
+
+            if data.empty:
+                # Unreachable poll. Keep the inventory we already hold: it is
+                # the list of microagents we need in order to mark anything
+                # UNKNOWN, so an outage must not erase it.
+                self.logger.warning(
+                    "Empty poll result; keeping the previously cached microagent inventory."
+                )
+            else:
+                data.drop(columns=["host_status", "status", "last_poll_at_IST", "microagent_name"], inplace=True, errors="ignore")
+                data.drop_duplicates(inplace=True)
+                HAWK_APPLICATION_MONITORING._cache["last_microagent_data"] = data
 
 
     def extract(self)->dict:
