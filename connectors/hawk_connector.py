@@ -147,12 +147,16 @@ class HAWK_CONNECTOR:
 
 
     def _get_microagent_status(self, param):
+        """Poll one microagent. Raises if the console could not be reached.
+
+        Swallowing the failure and returning {} here made an unreachable
+        microagent indistinguishable from one that answered "not running": both
+        produced an empty status, which the transform turns into
+        STOPPED_INFERRED. The caller has to be able to tell those apart.
+        """
         path = f"/{param["domain"]}/{param["dns"]}/{param["host_name"]}/invoke"
         payload = param.get("payload")
-        try:
-            return self._fetch(path=path, payload=payload, method="POST")
-        except Exception as e:
-            return {}
+        return self._fetch(path=path, payload=payload, method="POST")
 
 
         
@@ -314,6 +318,7 @@ class HAWK_CONNECTOR:
             })
     
             status_val = ''
+            unreachable = False
 
             if m_agent_payload:
                 # return None
@@ -324,8 +329,20 @@ class HAWK_CONNECTOR:
                     "host_name": host_name,
                     "payload": m_agent_payload
                 }
-        
-                status = self._get_microagent_status(param)
+
+                try:
+                    status = self._get_microagent_status(param)
+                except Exception as e:
+                    # We could not ask the console. That is not evidence the
+                    # application stopped, so it must not fall through as an
+                    # empty status -- the transform would turn that into
+                    # STOPPED_INFERRED and raise a false alarm on the dashboard.
+                    unreachable = True
+                    status = {}
+                    self.logger.warning(
+                        f"Status poll failed for microagent {m_agent_name} on "
+                        f"{host_name} ({domain}); reporting UNKNOWN: {format_error(e)}"
+                    )
 
                 status_val = next(
                     (
@@ -335,7 +352,10 @@ class HAWK_CONNECTOR:
                     ),
                     None
                 )
-    
+
+            if unreachable:
+                status_val = "UNKNOWN"
+
             row = {
                 "dns": dns,
                 "domain": domain,
@@ -346,9 +366,10 @@ class HAWK_CONNECTOR:
                 "type": _type,
                 "deployment": deployment,
                 "component": component,
-                "application_tracked" : "Yes" if status_val else "No"
+                # Only a real answer proves we know how to poll this application.
+                "application_tracked" : "Yes" if status_val and not unreachable else "No"
             }
-    
+
             return row
     
         except Exception as e:

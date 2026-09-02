@@ -170,15 +170,39 @@ class MSSQL_Connector:
 
 
     @with_transaction(enabled=True)
-    def truncate_and_insert_df(self, cursor, df:pd.DataFrame, table:TableConfig):
-        db_cols = self.get_columns(table)        
+    def truncate_and_insert_df(self, cursor, df:pd.DataFrame, table:TableConfig, allow_empty=False):
+        """Replace the contents of `table` with `df`.
+
+        Everything that could leave the table empty is checked BEFORE the
+        truncate. Truncating first and only then discovering there is nothing
+        to insert wipes the table and reports success, which is how a schema
+        drift or a bad poll used to empty a production table silently.
+
+        An empty frame is a legitimate result for some pipelines ("nothing is
+        alerting"), so emptying the table is allowed -- but only when the
+        caller asks for it by name.
+        """
+        db_cols = self.get_columns(table)
         cols_to_insert = [col for col in df.columns if col in db_cols]
+
+        if not cols_to_insert:
+            raise ValueError(
+                f"Refusing to truncate {table.sql_table_name}: none of the "
+                f"{len(df.columns)} frame column(s) match the table. "
+                f"Frame has {sorted(df.columns)[:10]}, table has {sorted(db_cols)[:10]}."
+            )
+
+        if df.empty and not allow_empty:
+            raise ValueError(
+                f"Refusing to truncate {table.sql_table_name}: the frame is empty "
+                f"and this load did not opt in to emptying the table. Pass "
+                f"allow_empty=True if an empty result really means 'no rows'."
+            )
+
         df_to_insert = df[cols_to_insert]
 
         self.truncate_table(table)
-
-        if cols_to_insert:
-            self.batch_insert(df=df_to_insert, table=table)
+        self.batch_insert(df=df_to_insert, table=table)
 
     @with_transaction(enabled=False)
     def truncate_table(self, cursor, table:TableConfig):
