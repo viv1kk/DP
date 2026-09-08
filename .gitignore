@@ -1,0 +1,49 @@
+# --- Secrets -----------------------------------------------------------
+# Never commit real credentials. .env.example is the template and must
+# contain placeholders only.
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.pfx
+*.p12
+
+# --- Python ------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+
+# --- Virtual environments ----------------------------------------------
+# .venv self-ignores via a generated .gitignore; do not rely on that.
+.venv/
+venv/
+env/
+
+# --- Tooling caches ----------------------------------------------------
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.ipynb_checkpoints/
+
+# --- Local SQL scratch dir ---------------------------------------------
+.db/
+
+# --- Tests (excluded from this deployment repo by choice) --------------
+tests/
+
+# --- Runtime output ----------------------------------------------------
+# bacc_server.log is written by the run-bacc-deployment driver.
+*.log
+
+# --- Editors / OS ------------------------------------------------------
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+desktop.ini
