@@ -76,7 +76,7 @@ pipelines:
           "SID" : "VARCHAR(32)",
           "Priority" : "VARCHAR(4)",
           "latest_poll_timestamp": "DATETIME2(0)",
-          "URL_Poll_Result" : "BIT",
+          "URL_Poll_Result" : "BIT NULL",
           "Solution" : "VARCHAR(32)"
         }
   SAP_URL_MONITORING:
@@ -125,5 +125,5 @@ pipelines:
           "Cluster": "VARCHAR(128)",
           "OS  Type": "VARCHAR(128)",
           "OS version": "VARCHAR(128)",
-          "Poll Result": "BIT"
+          "Poll Result": "BIT NULL"
         }
