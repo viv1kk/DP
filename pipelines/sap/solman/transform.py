@@ -11,6 +11,7 @@ from zoneinfo import ZoneInfo
 import pytz
 import numpy as np
 from framework.logger import get_logger, format_error
+from framework.util import clean_url
 
 logger = get_logger("SAP_SOLMAN")
 
@@ -30,17 +31,22 @@ def fetch_data_from_table(db: MSSQL_Config, table: TableConfig, columns:list):
 
 def fetch_sid_poll_aggregate(db: MSSQL_Config, table: TableConfig, columns:list):
     """
-    Fetch only SID and MIN(Poll_Result) aggregated in SQL Server.
+    Fetch SID and MIN(Poll_Result) per SID.
+
+    Rows with no URL mapping carry no availability signal, so their Poll Result
+    is NULL and ignored by MIN. A SID with no polled URL at all gets NULL.
     """
     
     try:
         df = fetch_data_from_table(db, table, columns)
         # Ensure BIT column becomes integer (0/1/None)
         df["Poll Result"] = df["Poll Result"].astype("float").astype("Int64")
+        # Guard against stale rows where a missing URL was polled and stored as False.
+        df["Poll Result"] = df["Poll Result"].where(df["link to Fiori Launchpad"].map(clean_url).notna())
     
-        # Aggregate → MIN(Poll_Result) per SID
+        # Aggregate → MIN(Poll_Result) per SID (one row per SID, so the merge below cannot duplicate events)
         df_agg = (
-            df.groupby(["Solution","SID"], as_index=False)
+            df.groupby("SID", as_index=False)
               .agg(URL_Poll_Result=("Poll Result", "min"))
         )
     
@@ -67,7 +73,7 @@ def enrich_df(df:pd.DataFrame, data:dict, db:MSSQL_Config, url_poll_tbl_config:T
     url_poll_data = fetch_sid_poll_aggregate(
         db=db, 
         table=url_poll_tbl_config, 
-        columns=["SID", "Poll Result", "Solution"]
+        columns=["SID", "Poll Result", "link to Fiori Launchpad"]
     )
     df = df.merge(
         url_poll_data[["SID", "URL_Poll_Result"]],
@@ -213,7 +219,9 @@ def pr1(df):
 
 
 
-    p1_systems.update(df[df['URL_Poll_Result'] == False]['RootComponentName'].unique())    
+    # Only an explicit failed poll (0) counts; NULL means no URL mapping and must not raise priority.
+    url_down = df['URL_Poll_Result'].eq(0).fillna(False).astype(bool)
+    p1_systems.update(df[url_down]['RootComponentName'].unique())
     
     return np.array(list(p1_systems))
 
