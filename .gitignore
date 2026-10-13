@@ -39,6 +39,8 @@ tests/
 # --- Runtime output ----------------------------------------------------
 # bacc_server.log is written by the run-bacc-deployment driver.
 *.log
+# Previous data file versions kept by the maintenance API on each replace.
+data/**/archive/
 
 # --- Editors / OS ------------------------------------------------------
 .vscode/
