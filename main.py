@@ -11,6 +11,9 @@ orchestrator = Orchestrator()
 from routes.interval_control import build_router
 app.include_router(build_router(orchestrator))
 
+from routes.maintenance import build_router as build_maintenance_router
+app.include_router(build_maintenance_router(orchestrator))
+
 # =========================
 # API Endpoints
 # =========================
